@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -137,7 +137,7 @@ export default {
     }
   },
   filters: {
-    wordWrap(value) {
+    wordWrap (value) {
       return value.split(' ')[0] + '..'
     }
   }
