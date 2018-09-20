@@ -1,0 +1,52 @@
+$primary-color: #2e9ad0;
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  padding: 20px 40px 0 40px;
+}
+.panel {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+.panel-body {
+  padding: 10px 10px 50px 10px;
+}
+.content {
+  padding: 20px 10px;
+}
+.bg-content {
+  background-image: -webkit-gradient(linear,left top,left bottom,from( #ffffff),to( #e0f7fa));
+  border: 2px solid #eeeeee;
+  border-radius: 5px;
+}
+
+.headline {
+  border-bottom: 2px solid #aaa;
+}
+
+.topic {
+	margin-bottom: 1rem;
+	font-size: 18px;
+	font-weight: bold;
+	color: $primary-color;
+}
+.font-normal {
+	font-size: 16px;
+	font-weight: bold;
+	color: $primary-color;
+}
+.table-bg {
+	background-color: #fff;
+}
+.table-head {
+	background-color: $primary-color;
+	color: #fff;
+}
+
+.v-select {
+	background-color: #fff !important;
+}
