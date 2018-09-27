@@ -16,15 +16,16 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <router-link to="/measurement_domain" tag="li"><a>Measurement Domain</a></router-link>
-              <a class="dropdown-item" href="#">Standard</a>
-              <a class="dropdown-item" href="#">Oraganization Management</a>
-              <a class="dropdown-item" href="#">User Management</a>
-              <a class="dropdown-item" href="#">Category Management</a>
-              <a class="dropdown-item" href="#">Risk Management</a>
-              <a class="dropdown-item" href="#">Indicator Management</a>
-              <a class="dropdown-item" href="#">Period Management</a>
-              <a class="dropdown-item" href="#">Prioritization Criteria</a>
-              <a class="dropdown-item" href="#">Approve List</a>
+              <router-link to="/standard" tag="li"><a>Standard</a></router-link>
+              <router-link to="/organization_management" tag="li"><a>Organization Management</a></router-link>
+              <router-link to="/user_management" tag="li"><a>User Management</a></router-link>
+              <router-link to="/category" tag="li"><a>Category Management</a></router-link>
+              <router-link to="/risk" tag="li"><a>Risk Management</a></router-link>
+              <router-link to="/risk_type" tag="li"><a>Risk Type</a></router-link>
+              <router-link to="/indicator_management" tag="li"><a>Indicator Management</a></router-link>
+              <router-link to="/period_management" tag="li"><a>Period Management</a></router-link>
+              <router-link to="/prioritization_criteria" tag="li"><a>Prioritization Criteria</a></router-link>
+              <router-link to="/approve_list" tag="li"><a>ApproveList</a></router-link>
             </div>
           </li>
         </ul>
@@ -60,17 +61,20 @@ export default {
       a {
         display: block;
         padding: .5rem 1rem;
-        color: rgba(0,0,0,.5);
+        color: rgba(0,0,0, .7);
         &:hover {
-          color: rgba(0,0,0,.7);
+          color: #000;
           text-decoration: none;
         }
       }
     }
     .active {
       a {
-        color: rgba(0,0,0,.9);
+        color: #000;
       }
     }
+  }
+  .dropdown-menu {
+    min-width: 15rem;
   }
 </style>
