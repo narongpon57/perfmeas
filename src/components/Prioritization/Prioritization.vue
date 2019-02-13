@@ -38,7 +38,7 @@
             <thead class="table-head">
               <th>รหัส</th>
               <th>ชื่อตัวขี้วัด</th>
-              <th>QPS Type</th>
+              <!-- <th>QPS Type</th> -->
               <th>Indicator Type</th>
               <th style="width:100px;" v-for="item in criteria" :key="item.name">{{ item.name }}</th>
               <th>Priority score</th>
@@ -47,7 +47,7 @@
               <tr>
                 <td></td>
                 <td></td>
-                <td></td>
+                <!-- <td></td> -->
                 <td></td>
                 <td colspan="9" style="background-color: antiquewhite;">น้ำหนัก</td>
                 <td></td>
@@ -55,7 +55,7 @@
               <tr>
                 <td></td>
                 <td></td>
-                <td></td>
+                <!-- <td></td> -->
                 <td></td>
                 <td style="background-color: antiquewhite;" v-for="item in criteria" :key="item.name">{{ item.weight }}</td>
                 <td></td>
@@ -63,7 +63,7 @@
               <tr>
                 <td></td>
                 <td></td>
-                <td></td>
+                <!-- <td></td> -->
                 <td></td>
                 <td colspan="9" style="background-color: aliceblue;">Scale</td>
                 <td></td>
@@ -71,7 +71,7 @@
                 <tr>
                 <td></td>
                 <td></td>
-                <td></td>
+                <!-- <td></td> -->
                 <td></td>
                 <td style="background-color: aliceblue; text-align: left;" v-for="item in criteria" :key="item.name">
                   <div v-for="scale in item.scale" :key="scale.label" v-tooltip:left="scale.val + ' ' + scale.label">{{ scale.val }} {{ scale.label | wordWrap }}</div>
@@ -81,7 +81,7 @@
               <tr>
                 <td>BHQ10283685</td>
                 <td>% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                <td>Managerial</td>
+                <!-- <td>Managerial</td> -->
                 <td>Outcome</td>
                 <td v-for="number in count" :key="number"><input type="text" value="0"></td>
                 <td>95</td>
@@ -89,7 +89,7 @@
               <tr>
                 <td>BHQ10283685</td>
                 <td>% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                <td>Managerial</td>
+                <!-- <td>Managerial</td> -->
                 <td>Outcome</td>
                 <td v-for="number in count" :key="number"><input type="text" value="0"></td>
                 <td>95</td>

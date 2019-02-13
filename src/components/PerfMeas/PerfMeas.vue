@@ -37,7 +37,6 @@
           <table class="table table-bordered table-bg table-sm text-center">
             <thead class="table-head">
               <th></th>
-              <th></th>
               <th>รหัส</th>
               <th>ชื่อตัวขี้วัด</th>
               <th>ตัวตั้ง (a) / ตัวหาร (b)</th>
@@ -63,7 +62,6 @@
             <tbody>
               <tr>
                 <td rowspan="2"><i class="fas fa-times"></i></td>
-                <td rowspan="2"></td>
                 <td rowspan="2">BHQ10283666</td>
                 <td rowspan="2">% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
                 <td>จำนวนผู้ให้คะแนนความพึงพอใจสูงสุด ความรวดเร็วในการให้ข้อมูล/จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด เปอร์เซ็น</td>
@@ -103,7 +101,7 @@
                 <td>0.00</td>
               </tr>
               <tr style="background-color: antiquewhite;">
-                <td colspan="10"></td>
+                <td colspan="9"></td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
@@ -120,7 +118,6 @@
               </tr>
               <tr>
                 <td rowspan="2"><i class="fas fa-times"></i></td>
-                <td rowspan="2"></td>
                 <td rowspan="2">BHQ10283666</td>
                 <td rowspan="2">% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
                 <td>จำนวนผู้ให้คะแนนความพึงพอใจสูงสุด ความรวดเร็วในการให้ข้อมูล/จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด เปอร์เซ็น</td>
@@ -160,7 +157,7 @@
                 <td>0.00</td>
               </tr>
               <tr style="background-color: antiquewhite;">
-                <td colspan="10"></td>
+                <td colspan="9"></td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>

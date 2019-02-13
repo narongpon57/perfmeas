@@ -22,7 +22,7 @@
               <v-select v-model="yearSelected" :options="year"></v-select>
             </div>
             <div class="form-group text-center">
-              <button class="btn btn-info" @click="isSearch = true">Search</button>
+              <button class="btn btn-info" @click="search()">Search</button>
             </div>
           </div>
           <div class="col-md-8">
@@ -81,61 +81,20 @@
           </div>
         </div>
         <div class="row risk-table" v-if="isSearch">
-          <div class="col-md-12">
-            <table class="table table-bg">
-              <thead class="table-head">
-                <th></th>
-                <th>รหัสความเสี่ยง</th>
-                <th>ประเภทความเสี่ยง</th>
-                <th>ปัญหาหรือกิจกรรมที่เป็นความเสี่ยง</th>
-                <th>รายการความเสี่ยง</th>
-                <th>คำอธิบาย</th>
-                <th>โอกาสเกิดเหตุ</th>
-                <th>ความรุนแรงของผลกระทบ</th>
-                <th>คะแนนความเสี่ยง</th>
-                <th>ตัวชี้วัดปัจจุบัน</th>
-                <th>กลยุทธ์จัดการความเสี่ยง</th>
-                <th>Risk Owner</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td></td>
-                  <td>R001</td>
-                  <td>General Risk</td>
-                  <td>ความเสี่ยง General Risk</td>
-                  <td>ความเสี่ยง General Risk: Back Office</td>
-                  <td>ความเสี่ยง General Risk: Back Office</td>
-                  <td><input type="text" value="1"></td>
-                  <td><input type="text" value="5"></td>
-                  <td><input type="text" value="5"></td>
-                  <td>% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                  <td><textarea></textarea></td>
-                  <td>BHQ</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>R001</td>
-                  <td>General Risk</td>
-                  <td>ความเสี่ยง General Risk</td>
-                  <td>ความเสี่ยง General Risk: Back Office</td>
-                  <td>ความเสี่ยง General Risk: Back Office</td>
-                  <td><input type="text" value="1"></td>
-                  <td><input type="text" value="5"></td>
-                  <td><input type="text" value="5"></td>
-                  <td>% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                  <td><textarea></textarea></td>
-                  <td>BHQ</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <app-risk :risks="risks"></app-risk>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import Risk from './Risk.vue'
+
 export default {
+  components: {
+    appRisk: Risk
+  },
   data () {
     return {
       orgType: ['Bu', 'Department'],
@@ -146,7 +105,17 @@ export default {
       orgCodeSelected: '',
       orgNameSelected: '',
       yearSelected: '',
-      isSearch: false
+      isSearch: false,
+      risks: []
+    }
+  },
+  methods: {
+    ...mapGetters({
+      getRisk: 'getRisk'
+    }),
+    search () {
+      this.isSearch = true
+      this.risks = this.$store.getters.getRisk
     }
   }
 }
@@ -155,17 +124,6 @@ export default {
 <style lang="scss" scoped>
   .risk-table {
     margin-top: 20px;
-    table {
-      font-size: 12px;
-      tbody {
-        font-weight: 700;
-        input[type="text"] {
-          text-align: center;
-          height: 30px;
-          width: 50%;
-        }
-      }
-    }
   }
   .col-padding {
     padding: 0 5px !important;
