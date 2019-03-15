@@ -46,7 +46,7 @@ export const routes = [
   { path: '/risk_type', component: RiskType },
   { path: '/risk_type_form', component: RiskTypeForm },
   { path: '/risk', component: Risk },
-  { path: '/risk_form', component: RiskForm },
+  { path: '/risk_form/:id?', component: RiskForm },
   { path: '/prioritization_criteria', component: Criteria },
   { path: '/prioritization_criteria_form', component: CriteriaForm },
   { path: '/user_management', component: User },

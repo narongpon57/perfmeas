@@ -13,76 +13,156 @@
         <th>คะแนนความเสี่ยง</th>
         <th>ตัวชี้วัดปัจจุบัน</th>
         <th>กลยุทธ์จัดการความเสี่ยง</th>
-        <!-- <th>Risk Owner</th> -->
       </thead>
-      <tbody>
+      <tbody class="text-left">
         <tr
-          v-for="(risk, index) in risks"
+          v-for="(risk, index) in risk_assessment"
           :key="risk.id">
-          <td></td>
-          <td>{{ risk.id }}</td>
-          <td>{{ risk.risk_type }}k</td>
+          <td>
+            <font-awesome-icon
+              icon="times"
+              @click="removeRisk(index)"
+              class="remove-icon"/>
+          </td>
+          <td>{{ risk.code }}</td>
+          <td>{{ risk.risk_type }}</td>
           <td>{{ risk.problem_area }}</td>
           <td>{{ risk.identified }}</td>
-          <td>{{ risk.description }}</td>
-          <td><input
-            type="number"
+          <td class="desc">{{ risk.description }}</td>
+          <td class="probability"><input
+            type="text"
             class="form-control"
-            @input="cal(index)"
-            v-model="probability[index]"></td>
-          <td><input
-            type="number"
+            v-model="risk.probability"></td>
+          <td class="impact"><input
+            type="text"
             class="form-control"
-            @input="cal(index)"
-            v-model="impact[index]"></td>
-          <td><input
+            v-model="risk.impact"></td>
+          <td class="risk-score"><input
             type="text"
             class="form-control"
             readonly="readonly"
-            v-model="risk_score[index]"></td>
-          <td>% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-          <td><textarea
+            :value="risk.probability * risk.impact"></td>
+          <td class="indicator">
+            <div v-for="(indicator, i) in risk.risk_indicator"
+              :key="indicator.id">
+              <font-awesome-icon
+                icon="times"
+                class="remove-icon"
+                @click="removeIndicator(index, i)"/> {{ indicator.name }}
+            </div>
+            <font-awesome-icon
+              icon="plus-circle"
+              class="float-right add-icon"
+              @click="showIndicatorModal(index)"/>
+          </td>
+          <td class="strategy"><textarea
             row="3"
             class="form-control"
-            v-model="mitigation_strategy[index]"></textarea></td>
+            v-model="risk.mitigation_strategy"></textarea></td>
+        </tr>
+        <tr v-show="!risk_assessment.length">
+          <td colspan="11" class="text-center">No Data</td>
         </tr>
       </tbody>
     </table>
-    <div class="col-md-12">
+    <div class="col-md-12 form-group text-left">
+      <button class="btn btn-info" @click="showRiskModal()">Add Risk</button>
+    </div>
+    <div
+      class="col-md-12 form-group"
+      v-if="msg"
+      v-bind:class="{ 'text-success': success, 'text-danger': !success }">
+      {{ msg }}
+    </div>
+    <div class="col-md-12" v-if="risk_assessment.length">
       <button class="btn btn-primary" @click="save()">Save</button>
       <button class="btn btn-danger">Close</button>
     </div>
+    <app-risk-modal
+      v-show="isModalVisible"
+      @close="closeRiskModal"
+    />
+     <app-indicator-modal
+      v-show="isIndicatorModalVisible"
+      @close="closeIndicatorModal"
+      :risk_index="row"
+    />
   </div>
 </template>
 
 <script>
+import riskModal from '../RiskModal.vue'
+import indicatorModal from '../IndicatorModal.vue'
+import { mapFields } from 'vuex-map-fields'
+import { mapActions } from 'vuex'
+
 export default {
-  props: ['risks'],
+  props: ['org'],
+  components: {
+    'app-risk-modal': riskModal,
+    'app-indicator-modal': indicatorModal
+  },
   data () {
     return {
-      probability: [],
-      impact: [],
-      risk_score: [],
-      mitigation_strategy: []
+      isModalVisible: false,
+      isIndicatorModalVisible: false,
+      row: ''
     }
   },
   methods: {
-    save () {
-      this.risks.map((risk, index) => {
-        const riskAssessment = {
-          risk_id: risk.id,
-          probability: this.probability[index],
-          impact: this.impact[index],
-          risk_score: this.risk_score[index],
-          mitigation_strategy: this.mitigation_strategy[index]
-        }
-        console.log(riskAssessment)
-      })
+    ...mapActions('riskAssessment', [
+      'removeRiskAssess',
+      'removeRiskIndicator',
+      'saveRiskAssess'
+    ]),
+    showRiskModal () {
+      this.isModalVisible = true
     },
-    cal (index) {
-      console.log(1)
-      let score = this.probability[index] * this.impact[index]
-      this.risk_score[index] = isNaN(score) ? '' : score
+    closeRiskModal () {
+      this.isModalVisible = false
+    },
+    showIndicatorModal (index) {
+      this.row = index
+      this.isIndicatorModalVisible = true
+    },
+    closeIndicatorModal () {
+      this.isIndicatorModalVisible = false
+    },
+    save () {
+      const payload = {
+        risk_assessment: this.risk_assessment,
+        org: this.org
+      }
+      this.saveRiskAssess(payload)
+    },
+    removeRisk (index) {
+      let r = confirm('Do you want to delete this row ?')
+      if (r) {
+        this.removeRiskAssess(index)
+      }
+    },
+    removeIndicator (riskIndex, indIndex) {
+      let r = confirm('Do you want to delete this row ?')
+      if (r) {
+        const payload = {
+          riskIndex,
+          indIndex
+        }
+        this.removeRiskIndicator(payload)
+      }
+    }
+  },
+  computed: {
+    ...mapFields('riskAssessment', [
+      'risk_assessment',
+      'risk_indicator',
+      'success',
+      'msg'
+    ]),
+    riskscore () {
+      return this.risk_assessment.map(item => {
+        return Number(item.probability * item.impact)
+      })
     }
   }
 }
@@ -103,6 +183,20 @@ table {
       width: 50%;
       margin: 0 auto;
     }
+  }
+  .probability,
+  .impact,
+  .risk-score {
+    width: 9%;
+  }
+  .desc {
+    width: 15%;
+  }
+  .indicator {
+    width: 13%;
+  }
+  .strategy {
+    width: 19%;
   }
 }
 </style>

@@ -7,22 +7,34 @@
           <div class="col-md-4">
             <div class="form-group">
               <label for="" class="font-normal">Organization Type</label>
-              <v-select v-model="orgTypeSelected" :options="orgType"></v-select>
+              <v-select
+                @input="selectOrgType"
+                v-model="orgTypeSelected"
+                :options="orgType"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Organization Code</label>
-              <v-select v-model="orgCodeSelected" :options="orgCode"></v-select>
+              <v-select
+                @input="selectOrgCode"
+                v-model="orgSelectedCode"
+                :options="orgCode"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Organization Name</label>
-              <v-select v-model="orgNameSelected" :options="orgName"></v-select>
+              <v-select
+                @input="selectOrgName"
+                v-model="orgSelectedName"
+                :options="orgName"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Data of Year</label>
               <v-select v-model="yearSelected" :options="year"></v-select>
             </div>
             <div class="form-group text-center">
-              <button class="btn btn-info" @click="search()">Search</button>
+              <button
+                class="btn btn-info"
+                v-if="orgSelected.id && yearSelected"
+                @click="search()">Search</button>
             </div>
           </div>
           <div class="col-md-8">
@@ -81,15 +93,18 @@
           </div>
         </div>
         <div class="row risk-table" v-if="isSearch">
-          <app-risk :risks="risks"></app-risk>
+          <app-risk
+            :org="orgSelected">
+          </app-risk>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Risk from './Risk.vue'
+import { mapFields } from 'vuex-map-fields'
 
 export default {
   components: {
@@ -97,26 +112,45 @@ export default {
   },
   data () {
     return {
-      orgType: ['Bu', 'Department'],
-      orgCode: ['BHQ', 'GLS001', 'GLS002', 'GLS003'],
-      orgName: ['BU.Back Office', 'BU.OPD', 'BU.IPD'],
+      orgType: ['Division', 'Department'],
       year: ['2017', '2018', '2019', '2020'],
       orgTypeSelected: '',
-      orgCodeSelected: '',
-      orgNameSelected: '',
       yearSelected: '',
       isSearch: false,
       risks: []
     }
   },
   methods: {
-    ...mapGetters({
-      getRisk: 'getRisk'
+    ...mapGetters(`organization`, {
+      getRisk: 'getRisk',
+      filterByOrgName: 'filterByOrgName',
+      filterByOrgCode: 'filterByOrgCode'
     }),
     search () {
       this.isSearch = true
-      this.risks = this.$store.getters.getRisk
+    },
+    selectOrgType () {
+      if (this.orgTypeSelected !== '' && this.orgTypeSelected !== null) {
+        this.$store.dispatch('organization/searchOrg', this.orgTypeSelected)
+      }
+    },
+    selectOrgName () {
+      this.filterByOrgName()
+    },
+    selectOrgCode () {
+      this.filterByOrgCode()
     }
+  },
+  computed: {
+    ...mapFields(`organization`, [
+      'orgSelectedName',
+      'orgSelectedCode',
+      'orgSelected'
+    ]),
+    ...mapState({
+      orgCode: state => state.organization.codes,
+      orgName: state => state.organization.names
+    })
   }
 }
 </script>

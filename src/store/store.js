@@ -1,15 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import header from './modules/header'
-import prioritizationCriteria from './modules/prioritization_criteria'
+import prioritization from './modules/prioritization'
 import riskAssessment from './modules/risk_assessment'
+import riskMaster from './modules/risk_master'
+import indicatorMaster from './modules/indicator_master'
+import organization from './modules/organization'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     header,
-    prioritizationCriteria,
-    riskAssessment
+    prioritization,
+    riskAssessment,
+    riskMaster,
+    indicatorMaster,
+    organization
   }
 })

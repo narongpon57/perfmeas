@@ -21,4 +21,8 @@ export default {
 
 <style lang="scss">
 @import './assets/scss/global.scss';
+.v-select {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+}
 </style>
