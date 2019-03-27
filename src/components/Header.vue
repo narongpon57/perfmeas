@@ -29,6 +29,12 @@
             </div>
           </li>
         </ul>
+        <div class="user">
+          <font-awesome-icon class="icon" icon="user"/>{{ username }}
+        </div>
+        <button class="logout btn btn-default" @click="logout">
+          Logout <font-awesome-icon class="icon" icon="sign-out-alt"/>
+        </button>
       </div>
     </nav>
   </div>
@@ -36,6 +42,18 @@
 
 <script>
 export default {
+  data () {
+    return {
+      username: JSON.parse(localStorage.getItem('user')).username
+    }
+  },
+  methods: {
+    logout () {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 
@@ -76,5 +94,12 @@ export default {
   }
   .dropdown-menu {
     min-width: 15rem;
+  }
+  .user,
+  .logout {
+    margin-right: 2rem;
+  }
+  .icon {
+    margin: 0 0.3rem;
   }
 </style>

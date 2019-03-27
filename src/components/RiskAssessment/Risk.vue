@@ -16,39 +16,40 @@
       </thead>
       <tbody class="text-left">
         <tr
-          v-for="(risk, index) in risk_assessment"
-          :key="risk.id">
+          v-for="(item, index) in assessment.risk_assessment"
+          :key="item.id">
           <td>
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
               class="remove-icon"/>
           </td>
-          <td>{{ risk.code }}</td>
-          <td>{{ risk.risk_type }}</td>
-          <td>{{ risk.problem_area }}</td>
-          <td>{{ risk.identified }}</td>
-          <td class="desc">{{ risk.description }}</td>
+          <td>{{ item.risk.code }}</td>
+          <td>{{ item.risk.risk_type }}</td>
+          <td>{{ item.risk.problem_area }}</td>
+          <td>{{ item.risk.identified }}</td>
+          <td class="desc">{{ item.risk.description }}</td>
           <td class="probability"><input
             type="text"
             class="form-control"
-            v-model="risk.probability"></td>
+            v-model="item.probability"></td>
           <td class="impact"><input
             type="text"
             class="form-control"
-            v-model="risk.impact"></td>
+            v-model="item.impact"></td>
           <td class="risk-score"><input
             type="text"
-            class="form-control"
+            class="form-control risk-score-font"
+            v-bind:class="riskScoreStyle(item.probability * item.impact)"
             readonly="readonly"
-            :value="risk.probability * risk.impact"></td>
+            :value="item.probability * item.impact"></td>
           <td class="indicator">
-            <div v-for="(indicator, i) in risk.risk_indicator"
-              :key="indicator.id">
+            <div v-for="(indicator, i) in item.risk_indicator"
+              :key="indicator.indicator.id">
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                @click="removeIndicator(index, i)"/> {{ indicator.name }}
+                @click="removeIndicator(index, i)"/> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
@@ -58,15 +59,23 @@
           <td class="strategy"><textarea
             row="3"
             class="form-control"
-            v-model="risk.mitigation_strategy"></textarea></td>
+            v-model="item.mitigation_strategy"></textarea></td>
         </tr>
-        <tr v-show="!risk_assessment.length">
+        <tr v-show="!assessment.risk_assessment.length">
           <td colspan="11" class="text-center">No Data</td>
         </tr>
       </tbody>
     </table>
-    <div class="col-md-12 form-group text-left">
+    <div
+      class="col-md-12 form-group text-left"
+      v-if="parseInt(year) === new Date().getFullYear() && assessment.status !== 'Approve'">
       <button class="btn btn-info" @click="showRiskModal()">Add Risk</button>
+      <span v-if="assessment.id && assessment.status === 'waiting for approve'">
+         <button class="btn btn-warning float-right"
+          @click="showApproveModal('Review')">Review</button>
+        <button class="btn btn-success float-right"
+          @click="showApproveModal('Approve')">Approve</button>
+      </span>
     </div>
     <div
       class="col-md-12 form-group"
@@ -74,18 +83,26 @@
       v-bind:class="{ 'text-success': success, 'text-danger': !success }">
       {{ msg }}
     </div>
-    <div class="col-md-12" v-if="risk_assessment.length">
+    <div class="col-md-12 form-group" v-if="assessment.risk_assessment.length">
       <button class="btn btn-primary" @click="save()">Save</button>
       <button class="btn btn-danger">Close</button>
+    </div>
+    <div class="col-md-8 offset-md-2 form-group" v-if="approval.length">
+      <app-approval
+        :approval="approval"></app-approval>
     </div>
     <app-risk-modal
       v-show="isModalVisible"
       @close="closeRiskModal"
     />
-     <app-indicator-modal
+    <app-indicator-modal
       v-show="isIndicatorModalVisible"
       @close="closeIndicatorModal"
       :risk_index="row"
+    />
+    <app-approve-modal
+      v-show="isApproveModalVisible"
+      @close="closeApproveModal"
     />
   </div>
 </template>
@@ -93,19 +110,24 @@
 <script>
 import riskModal from '../RiskModal.vue'
 import indicatorModal from '../IndicatorModal.vue'
+import approveModal from '../ApproveModal.vue'
+import Approval from './Approval.vue'
 import { mapFields } from 'vuex-map-fields'
 import { mapActions } from 'vuex'
 
 export default {
-  props: ['org'],
+  props: ['org', 'year'],
   components: {
     'app-risk-modal': riskModal,
-    'app-indicator-modal': indicatorModal
+    'app-indicator-modal': indicatorModal,
+    'app-approval': Approval,
+    'app-approve-modal': approveModal
   },
   data () {
     return {
       isModalVisible: false,
       isIndicatorModalVisible: false,
+      isApproveModalVisible: false,
       row: ''
     }
   },
@@ -113,7 +135,8 @@ export default {
     ...mapActions('riskAssessment', [
       'removeRiskAssess',
       'removeRiskIndicator',
-      'saveRiskAssess'
+      'saveRiskAssess',
+      'updateRiskAssess'
     ]),
     showRiskModal () {
       this.isModalVisible = true
@@ -128,12 +151,24 @@ export default {
     closeIndicatorModal () {
       this.isIndicatorModalVisible = false
     },
+    showApproveModal (action) {
+      this.approve.status = action
+      this.isApproveModalVisible = true
+    },
+    closeApproveModal () {
+      this.isApproveModalVisible = false
+    },
     save () {
       const payload = {
-        risk_assessment: this.risk_assessment,
-        org: this.org
+        assessment: this.assessment,
+        org: this.org,
+        year: this.year
       }
-      this.saveRiskAssess(payload)
+      if (this.assessment.id === null) {
+        this.saveRiskAssess(payload)
+      } else {
+        this.updateRiskAssess(payload)
+      }
     },
     removeRisk (index) {
       let r = confirm('Do you want to delete this row ?')
@@ -150,27 +185,34 @@ export default {
         }
         this.removeRiskIndicator(payload)
       }
+    },
+    riskScoreStyle (riskScore) {
+      let className = ''
+      if (riskScore >= 1 && riskScore <= 3) className = 'low'
+      else if (riskScore >= 4 && riskScore <= 6) className = 'mod'
+      else if (riskScore >= 8 && riskScore <= 12) className = 'high'
+      else if (riskScore >= 15 && riskScore <= 25) className = 'extreme'
+      return className
     }
+  },
+  created () {
+    this.$store.dispatch('prioritization/getCriteria')
   },
   computed: {
     ...mapFields('riskAssessment', [
-      'risk_assessment',
-      'risk_indicator',
+      'assessment',
       'success',
-      'msg'
-    ]),
-    riskscore () {
-      return this.risk_assessment.map(item => {
-        return Number(item.probability * item.impact)
-      })
-    }
+      'msg',
+      'approval',
+      'approve'
+    ])
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .btn-primary {
-  margin: 0 5px;
+  margin: 0 10px;
 }
 table {
   font-size: 12px;
@@ -198,5 +240,28 @@ table {
   .strategy {
     width: 19%;
   }
+}
+
+.btn-warning {
+  margin-left: 10px;
+}
+
+.risk-score-font {
+  font-weight: bold;
+}
+
+.low {
+  background-color: green !important;
+  color: white;
+}
+.mod {
+  background-color: yellow !important;
+}
+.high {
+  background-color: orange !important;
+}
+.extreme {
+  background-color: red !important;
+  color: white;
 }
 </style>

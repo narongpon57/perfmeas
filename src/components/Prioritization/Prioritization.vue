@@ -9,7 +9,7 @@
               <label for="" class="font-normal">Organization Type </label>
               <v-select
                 @input="selectOrgType"
-                v-model="orgTypeSelected"
+                v-model="orgSelectedType"
                 :options="orgType"></v-select>
             </div>
             <div class="col-md-6">
@@ -53,7 +53,7 @@
 
 <script>
 import Criteria from './Criteria.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
@@ -64,25 +64,29 @@ export default {
     return {
       orgType: ['Division', 'Department'],
       year: ['2017', '2018', '2019', '2020'],
-      orgTypeSelected: '',
-      yearSelected: '',
       isSearch: false
     }
   },
   methods: {
+    ...mapActions(`prioritization`, [
+      'searchPrioritization'
+    ]),
     ...mapGetters(`organization`, {
       getRisk: 'getRisk',
       filterByOrgName: 'filterByOrgName',
       filterByOrgCode: 'filterByOrgCode'
     }),
     clear () {
-      this.orgTypeSelected = ''
-      this.orgCodeSelected = ''
-      this.orgNameSelected = ''
-      this.yearSelected = ''
     },
     search () {
-      this.isSearch = true
+      let payload = {
+        org_id: this.orgSelected.id,
+        year: this.yearSelected
+      }
+      this.searchPrioritization(payload)
+        .then(() => {
+          this.isSearch = true
+        })
     },
     selectOrgType () {
       if (this.orgTypeSelected !== '' && this.orgTypeSelected !== null) {
@@ -100,12 +104,17 @@ export default {
     ...mapFields(`organization`, [
       'orgSelectedName',
       'orgSelectedCode',
+      'orgSelectedType',
+      'yearSelected',
       'orgSelected'
     ]),
     ...mapState({
       orgCode: state => state.organization.codes,
       orgName: state => state.organization.names
     })
+  },
+  created () {
+    this.$store.dispatch('prioritization/getCriteria')
   },
   filters: {
     wordWrap (value) {

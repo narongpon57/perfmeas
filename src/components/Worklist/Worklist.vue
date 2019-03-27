@@ -6,7 +6,7 @@
         <div class="container">
           <p>Risk Assessment</p>
           <table class="table table-bg">
-            <thead class="table-head">
+            <thead class="table-head text-center">
               <th>Organization Type</th>
               <th>Organization Code</th>
               <th>Organization Name</th>
@@ -14,26 +14,19 @@
               <th>Status</th>
             </thead>
             <tbody>
-              <tr>
-                <td>BU</td>
-                <td>BU</td>
-                <td>BHQ</td>
-                <td>2018</td>
-                <td>Active</td>
+              <tr
+                class="worklist-row"
+                v-for="worklist in worklists"
+                :key="worklist.id"
+                @click="getRiskAssessment(worklist)">
+                <td>{{ worklist.org.type }}</td>
+                <td>{{ worklist.org.code }}</td>
+                <td>{{ worklist.org.name }}</td>
+                <td>{{ worklist.year }}</td>
+                <td>{{ worklist.status }}</td>
               </tr>
-              <tr>
-                <td>BU</td>
-                <td>BU</td>
-                <td>BHQ</td>
-                <td>2018</td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>BU</td>
-                <td>BU</td>
-                <td>BHQ</td>
-                <td>2018</td>
-                <td>Active</td>
+              <tr v-if="!worklists.length" class="text-center">
+                <td colspan="4">No Worklist</td>
               </tr>
             </tbody>
           </table>
@@ -43,8 +36,25 @@
   </div>
 </template>
 <script>
-export default {
+import { mapFields } from 'vuex-map-fields'
 
+export default {
+  created() {
+    let user = JSON.parse(localStorage.getItem('user'))
+    if (user.is_admin == 0) {
+      this.$store.dispatch('worklist/getWorkList', user.id)
+    }
+  },
+  methods: {
+    getRiskAssessment (worklist) {
+      console.log(worklist)
+    }
+  },
+  computed: {
+    ...mapFields('worklist', [
+      'worklists'
+    ])
+  }
 }
 </script>
 
@@ -52,6 +62,12 @@ export default {
 .container {
   p {
     font-weight: bold;
+  }
+  table {
+    font-size: 0.9rem;
+    .worklist-row {
+      cursor: pointer;
+    }
   }
 }
 </style>

@@ -9,7 +9,7 @@
               <label for="" class="font-normal">Organization Type</label>
               <v-select
                 @input="selectOrgType"
-                v-model="orgTypeSelected"
+                v-model="orgSelectedType"
                 :options="orgType"></v-select>
             </div>
             <div class="form-group">
@@ -94,7 +94,8 @@
         </div>
         <div class="row risk-table" v-if="isSearch">
           <app-risk
-            :org="orgSelected">
+            :org="orgSelected"
+            :year="yearSelected">
           </app-risk>
         </div>
       </div>
@@ -102,7 +103,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import Risk from './Risk.vue'
 import { mapFields } from 'vuex-map-fields'
 
@@ -114,24 +115,32 @@ export default {
     return {
       orgType: ['Division', 'Department'],
       year: ['2017', '2018', '2019', '2020'],
-      orgTypeSelected: '',
-      yearSelected: '',
       isSearch: false,
       risks: []
     }
   },
   methods: {
+    ...mapActions(`riskAssessment`, [
+      'searchRiskAssessment'
+    ]),
     ...mapGetters(`organization`, {
       getRisk: 'getRisk',
       filterByOrgName: 'filterByOrgName',
       filterByOrgCode: 'filterByOrgCode'
     }),
     search () {
-      this.isSearch = true
+      let payload = {
+        org_id: this.orgSelected.id,
+        year: this.yearSelected
+      }
+      this.searchRiskAssessment(payload)
+        .then(() => {
+          this.isSearch = true
+        })
     },
     selectOrgType () {
-      if (this.orgTypeSelected !== '' && this.orgTypeSelected !== null) {
-        this.$store.dispatch('organization/searchOrg', this.orgTypeSelected)
+      if (this.orgSelectedType !== '' && this.orgSelectedType !== null) {
+        this.$store.dispatch('organization/searchOrg', this.orgSelectedType)
       }
     },
     selectOrgName () {
@@ -145,6 +154,8 @@ export default {
     ...mapFields(`organization`, [
       'orgSelectedName',
       'orgSelectedCode',
+      'orgSelectedType',
+      'yearSelected',
       'orgSelected'
     ]),
     ...mapState({
@@ -218,7 +229,6 @@ export default {
     border-radius: 50%;
     display: inline-block;
   }
-
   .low {
     background-color: green;
   }

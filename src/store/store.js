@@ -6,6 +6,8 @@ import riskAssessment from './modules/risk_assessment'
 import riskMaster from './modules/risk_master'
 import indicatorMaster from './modules/indicator_master'
 import organization from './modules/organization'
+import authentication from './modules/authentication'
+import worklist from './modules/worklist'
 
 Vue.use(Vuex)
 
@@ -16,6 +18,8 @@ export default new Vuex.Store({
     riskAssessment,
     riskMaster,
     indicatorMaster,
-    organization
+    organization,
+    authentication,
+    worklist
   }
 })

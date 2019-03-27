@@ -8,8 +8,9 @@ const initialState = () => {
     names: [],
     orgSelectedName: '',
     orgSelectedCode: '',
-    orgSelected: [],
-    year: [new Date().getFullYear]
+    yearSelected: '',
+    orgSelectedType: '',
+    orgSelected: []
   }
 }
 
@@ -31,13 +32,15 @@ const mutations = {
     state.orgSelectedCode = value
   },
   'RESET_ORG_STATE' (state) {
-    Object.assign(state, initialState())
+    state.orgSelectedName = ''
+    state.orgSelectedCode = ''
+    state.yearSelected = ''
   }
 }
 
 const actions = {
   searchOrg ({ commit }, type) {
-    axios('/organization_unit', {
+    axios.get('/organization_unit', {
       params: {
         type: type
       }
@@ -45,6 +48,7 @@ const actions = {
       .then(res => res.data.result)
       .then(orgUnits => {
         commit('RESET_ORG_STATE')
+        console.log(orgUnits)
         commit('SET_ORGANIZATION_UNIT', orgUnits)
       })
       .catch(err => console.log(err))
