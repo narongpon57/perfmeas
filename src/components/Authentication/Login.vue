@@ -55,7 +55,7 @@ export default {
         password: this.password
       })
         .then(() => {
-          this.$router.push('/')
+          this.$router.push('/worklist')
         })
         .catch(() => {
           this.msg = 'Incorrect Username or Password !'

@@ -22,6 +22,7 @@
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
+              v-if="parseInt(user.id) === assessment.org.creator.id"
               class="remove-icon"/>
           </td>
           <td>{{ item.risk.code }}</td>
@@ -49,11 +50,14 @@
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                @click="removeIndicator(index, i)"/> {{ indicator.indicator.name }}
+                v-if="parseInt(user.id) === assessment.org.creator.id"
+                @click="removeIndicator(index, i)"/>
+              <span v-else>-</span> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
               class="float-right add-icon"
+              v-if="parseInt(user.id) === assessment.org.creator.id"
               @click="showIndicatorModal(index)"/>
           </td>
           <td class="strategy"><textarea
@@ -70,13 +74,22 @@
       <div
         class="col-md-12 form-group text-left"
         v-if="parseInt(year) === new Date().getFullYear() && assessment.status !== 'Approve'">
-        <button class="btn btn-info" @click="showRiskModal()">Add Risk</button>
-        <span v-if="assessment.id && assessment.status === 'waiting for approve' && parseInt(user.id) === assessment.org.creator.id">
-          <button class="btn btn-warning float-right"
-            @click="showApproveModal('Review')">Review</button>
-          <button class="btn btn-success float-right"
-            @click="showApproveModal('Approve')">Approve</button>
-        </span>
+        <button
+          class="btn btn-info"
+          @click="showRiskModal()"
+          v-if="parseInt(user.id) === assessment.org.creator.id">Add Risk</button>
+      </div>
+      <div
+        class="col-md-12 form-group text-right"
+        v-if="assessment.id && assessment.status === 'waiting for approve'">
+        <button
+          class="btn btn-success"
+          @click="showApproveModal('Approve')"
+            v-if="parseInt(user.is_admin) || assessment.org.step1_approver.id === parseInt(user.id)">Approve</button>
+        <button
+          class="btn btn-warning"
+          @click="showApproveModal('Review')"
+          v-if="parseInt(user.is_admin) || assessment.org.step1_approver.id === parseInt(user.id)">Review</button>
       </div>
       <div
         class="col-md-12 form-group"
@@ -84,7 +97,8 @@
         v-bind:class="{ 'text-success': success, 'text-danger': !success }">
         {{ msg }}
       </div>
-      <div class="col-md-12 form-group" v-if="assessment.risk_assessment.length">
+      <div class="col-md-12 form-group"
+        v-if="assessment.risk_assessment.length && parseInt(user.id) === assessment.org.creator.id">
         <button class="btn btn-primary" @click="save()">Save</button>
         <button class="btn btn-danger">Close</button>
       </div>
@@ -135,7 +149,6 @@ export default {
     }
   },
   created () {
-    console.log(this.assessment, this.user)
   },
   methods: {
     ...mapActions('riskAssessment', [

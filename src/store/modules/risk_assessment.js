@@ -209,19 +209,20 @@ const actions = {
     })
   },
   approve ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      axios.post('/approval', payload)
-        .then(res => res.data.result)
-        .then(approval => {
-          commit('ADD_APPROVAL', approval)
-          return axios.get('/assessment', { params: { id: payload.assessment_id } })
-        })
-        .then(res => res.data.result)
-        .then(assessment => {
-          commit('SET_ASSESSMENT_STATUS', assessment)
-        })
-        .catch(err => console.log(err))
-    })
+    console.log(payload)
+    // return new Promise((resolve, reject) => {
+    //   axios.post('/approval', payload)
+    //     .then(res => res.data.result)
+    //     .then(approval => {
+    //       commit('ADD_APPROVAL', approval)
+    //       return axios.get('/assessment', { params: { id: payload.assessment_id } })
+    //     })
+    //     .then(res => res.data.result)
+    //     .then(assessment => {
+    //       commit('SET_ASSESSMENT_STATUS', assessment)
+    //     })
+    //     .catch(err => console.log(err))
+    // })
   }
 }
 

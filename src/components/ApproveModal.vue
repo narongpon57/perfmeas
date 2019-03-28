@@ -54,12 +54,13 @@ export default {
       this.$emit('close')
     },
     save () {
+      const user = JSON.parse(localStorage.getItem('user'))
       const payload = {
         status: this.approve.status,
         description: this.approve.description,
         assessment_id: this.assessment.id,
-        approve_by: 2,
-        is_admin: true
+        approve_by: parseInt(user.is_admin) ? parseInt(user.id) : null,
+        is_admin: parseInt(user.is_admin)
       }
       this.$store.dispatch('riskAssessment/approve', payload)
       this.$emit('close')
