@@ -75,7 +75,8 @@ const mutations = {
       year: assessment.year,
       status: assessment.status,
       created_at: assessment.created_at,
-      risk_assessment: []
+      risk_assessment: [],
+      org: assessment.org
     }
     if (assessment.risk_assessment !== undefined) {
       for (let [i, riskAssessment] of Object.entries(assessment.risk_assessment)) {
@@ -172,8 +173,12 @@ const actions = {
       })
   },
   searchRiskAssessment ({ commit }, payload) {
-    const searchRisk = axios.get('/risk_assessment', { params: payload })
-    const seachApproval = axios.get('/approval', { params: payload })
+    const search = {
+      org_id: payload.org.id,
+      year: payload.year
+    }
+    const searchRisk = axios.get('/risk_assessment', { params: search })
+    const seachApproval = axios.get('/approval', { params: search })
     return new Promise((resolve, reject) => {
       Promise.all([
         searchRisk,
@@ -185,6 +190,8 @@ const actions = {
           if (riskAssessment.length) {
             commit('SET_SEARCH_ASSESSMENT', riskAssessment[0])
             commit('RESET_STATUS')
+            localStorage.setItem('year', payload.year)
+            localStorage.setItem('org', JSON.stringify(payload.org))
           } else {
             commit('RESET_ASSESSMENT')
           }

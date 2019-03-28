@@ -9,24 +9,24 @@
               <label for="" class="font-normal">Organization Type </label>
               <v-select
                 @input="selectOrgType"
-                v-model="orgSelectedType"
+                :value="typeSelected"
                 :options="orgType"></v-select>
             </div>
             <div class="col-md-6">
               <label for="" class="font-normal">Organization Code </label>
               <v-select
-                @input="selectOrgCode"
-                v-model="orgSelectedCode"
-                :options="orgCode"></v-select>
+                v-model="orgSelected"
+                label="code"
+                :options="orgUnits"></v-select>
             </div>
           </div>
           <div class="row form-group">
             <div class="col-md-6">
               <label for="" class="font-normal">Organization Name </label>
               <v-select
-                @input="selectOrgName"
-                v-model="orgSelectedName"
-                :options="orgName"></v-select>
+                v-model="orgSelected"
+                label="name"
+                :options="orgUnits"></v-select>
             </div>
             <div class="col-md-6">
               <label for="" class="font-normal">Data of Year </label>
@@ -38,7 +38,7 @@
               <button class="btn btn-info" @click="search">Search</button>
             </div>
             <div class="col-md-6">
-              <button class="btn btn-danger" @click="clear">Clear</button>
+              <button class="btn btn-danger">Clear</button>
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@
 
 <script>
 import Criteria from './Criteria.vue'
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
@@ -62,25 +62,31 @@ export default {
   },
   data () {
     return {
-      orgType: ['Division', 'Department'],
       year: ['2017', '2018', '2019', '2020'],
       isSearch: false
+    }
+  },
+  created () {
+    this.$store.dispatch('prioritization/getCriteria')
+    const org = JSON.parse(localStorage.getItem('org'))
+    const year = localStorage.getItem('year')
+    if (org !== null && year !== null) {
+      this.$store.dispatch('prioritization/searchPrioritization', { org, year })
+        .then(() => {
+          this.isSearch = true
+        })
     }
   },
   methods: {
     ...mapActions(`prioritization`, [
       'searchPrioritization'
     ]),
-    ...mapGetters(`organization`, {
-      getRisk: 'getRisk',
-      filterByOrgName: 'filterByOrgName',
-      filterByOrgCode: 'filterByOrgCode'
-    }),
-    clear () {
-    },
+    ...mapActions('organization', [
+      'searchOrg'
+    ]),
     search () {
       let payload = {
-        org_id: this.orgSelected.id,
+        org: this.orgSelected,
         year: this.yearSelected
       }
       this.searchPrioritization(payload)
@@ -88,33 +94,18 @@ export default {
           this.isSearch = true
         })
     },
-    selectOrgType () {
-      if (this.orgTypeSelected !== '' && this.orgTypeSelected !== null) {
-        this.$store.dispatch('organization/searchOrg', this.orgTypeSelected)
-      }
-    },
-    selectOrgName () {
-      this.filterByOrgName()
-    },
-    selectOrgCode () {
-      this.filterByOrgCode()
+    selectOrgType (type) {
+      this.searchOrg(type)
     }
   },
   computed: {
     ...mapFields(`organization`, [
-      'orgSelectedName',
-      'orgSelectedCode',
-      'orgSelectedType',
+      'typeSelected',
       'yearSelected',
-      'orgSelected'
-    ]),
-    ...mapState({
-      orgCode: state => state.organization.codes,
-      orgName: state => state.organization.names
-    })
-  },
-  created () {
-    this.$store.dispatch('prioritization/getCriteria')
+      'orgSelected',
+      'orgUnits',
+      'orgType'
+    ])
   },
   filters: {
     wordWrap (value) {

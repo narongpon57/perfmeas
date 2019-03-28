@@ -46,8 +46,12 @@ const actions = {
       .catch(err => console.log(err))
   },
   searchPrioritization ({ commit }, payload) {
+    const search = {
+      org_id: payload.org.id,
+      year: payload.year
+    }
     return new Promise((resolve, reject) => {
-      axios.get('/prioritization', { params: payload })
+      axios.get('/prioritization', { params: search })
         .then(res => res.data.result)
         .then(prioritization => {
           commit('SET_PRIORITIZATION', prioritization)

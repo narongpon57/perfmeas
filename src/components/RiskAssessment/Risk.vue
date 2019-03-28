@@ -66,30 +66,32 @@
         </tr>
       </tbody>
     </table>
-    <div
-      class="col-md-12 form-group text-left"
-      v-if="parseInt(year) === new Date().getFullYear() && assessment.status !== 'Approve'">
-      <button class="btn btn-info" @click="showRiskModal()">Add Risk</button>
-      <span v-if="assessment.id && assessment.status === 'waiting for approve'">
-         <button class="btn btn-warning float-right"
-          @click="showApproveModal('Review')">Review</button>
-        <button class="btn btn-success float-right"
-          @click="showApproveModal('Approve')">Approve</button>
-      </span>
-    </div>
-    <div
-      class="col-md-12 form-group"
-      v-if="msg"
-      v-bind:class="{ 'text-success': success, 'text-danger': !success }">
-      {{ msg }}
-    </div>
-    <div class="col-md-12 form-group" v-if="assessment.risk_assessment.length">
-      <button class="btn btn-primary" @click="save()">Save</button>
-      <button class="btn btn-danger">Close</button>
-    </div>
-    <div class="col-md-8 offset-md-2 form-group" v-if="approval.length">
-      <app-approval
-        :approval="approval"></app-approval>
+    <div>
+      <div
+        class="col-md-12 form-group text-left"
+        v-if="parseInt(year) === new Date().getFullYear() && assessment.status !== 'Approve'">
+        <button class="btn btn-info" @click="showRiskModal()">Add Risk</button>
+        <span v-if="assessment.id && assessment.status === 'waiting for approve' && parseInt(user.id) === assessment.org.creator.id">
+          <button class="btn btn-warning float-right"
+            @click="showApproveModal('Review')">Review</button>
+          <button class="btn btn-success float-right"
+            @click="showApproveModal('Approve')">Approve</button>
+        </span>
+      </div>
+      <div
+        class="col-md-12 form-group"
+        v-if="msg"
+        v-bind:class="{ 'text-success': success, 'text-danger': !success }">
+        {{ msg }}
+      </div>
+      <div class="col-md-12 form-group" v-if="assessment.risk_assessment.length">
+        <button class="btn btn-primary" @click="save()">Save</button>
+        <button class="btn btn-danger">Close</button>
+      </div>
+      <div class="col-md-8 offset-md-2 form-group" v-if="approval.length">
+        <app-approval
+          :approval="approval"></app-approval>
+      </div>
     </div>
     <app-risk-modal
       v-show="isModalVisible"
@@ -128,8 +130,12 @@ export default {
       isModalVisible: false,
       isIndicatorModalVisible: false,
       isApproveModalVisible: false,
-      row: ''
+      row: '',
+      user: JSON.parse(localStorage.getItem('user'))
     }
+  },
+  created () {
+    console.log(this.assessment, this.user)
   },
   methods: {
     ...mapActions('riskAssessment', [
@@ -194,9 +200,6 @@ export default {
       else if (riskScore >= 15 && riskScore <= 25) className = 'extreme'
       return className
     }
-  },
-  created () {
-    this.$store.dispatch('prioritization/getCriteria')
   },
   computed: {
     ...mapFields('riskAssessment', [

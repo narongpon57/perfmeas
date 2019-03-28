@@ -39,9 +39,9 @@
 import { mapFields } from 'vuex-map-fields'
 
 export default {
-  created() {
+  created () {
     let user = JSON.parse(localStorage.getItem('user'))
-    if (user.is_admin == 0) {
+    if (parseInt(user.is_admin) === 0) {
       this.$store.dispatch('worklist/getWorkList', user.id)
     }
   },

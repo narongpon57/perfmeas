@@ -9,22 +9,22 @@
               <label for="" class="font-normal">Organization Type</label>
               <v-select
                 @input="selectOrgType"
-                v-model="orgSelectedType"
+                :value="typeSelected"
                 :options="orgType"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Organization Code</label>
               <v-select
-                @input="selectOrgCode"
-                v-model="orgSelectedCode"
-                :options="orgCode"></v-select>
+                v-model="orgSelected"
+                label="code"
+                :options="orgUnits"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Organization Name</label>
               <v-select
-                @input="selectOrgName"
-                v-model="orgSelectedName"
-                :options="orgName"></v-select>
+                v-model="orgSelected"
+                label="name"
+                :options="orgUnits"></v-select>
             </div>
             <div class="form-group">
               <label for="" class="font-normal">Data of Year</label>
@@ -33,8 +33,8 @@
             <div class="form-group text-center">
               <button
                 class="btn btn-info"
-                v-if="orgSelected.id && yearSelected"
-                @click="search()">Search</button>
+                v-if="orgSelected && yearSelected"
+                @click="search">Search</button>
             </div>
           </div>
           <div class="col-md-8">
@@ -103,7 +103,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import Risk from './Risk.vue'
 import { mapFields } from 'vuex-map-fields'
 
@@ -113,24 +113,21 @@ export default {
   },
   data () {
     return {
-      orgType: ['Division', 'Department'],
       year: ['2017', '2018', '2019', '2020'],
       isSearch: false,
       risks: []
     }
   },
   methods: {
-    ...mapActions(`riskAssessment`, [
+    ...mapActions('riskAssessment', [
       'searchRiskAssessment'
     ]),
-    ...mapGetters(`organization`, {
-      getRisk: 'getRisk',
-      filterByOrgName: 'filterByOrgName',
-      filterByOrgCode: 'filterByOrgCode'
-    }),
+    ...mapActions('organization', [
+      'searchOrg'
+    ]),
     search () {
       let payload = {
-        org_id: this.orgSelected.id,
+        org: this.orgSelected,
         year: this.yearSelected
       }
       this.searchRiskAssessment(payload)
@@ -138,30 +135,18 @@ export default {
           this.isSearch = true
         })
     },
-    selectOrgType () {
-      if (this.orgSelectedType !== '' && this.orgSelectedType !== null) {
-        this.$store.dispatch('organization/searchOrg', this.orgSelectedType)
-      }
-    },
-    selectOrgName () {
-      this.filterByOrgName()
-    },
-    selectOrgCode () {
-      this.filterByOrgCode()
+    selectOrgType (type) {
+      this.searchOrg(type)
     }
   },
   computed: {
     ...mapFields(`organization`, [
-      'orgSelectedName',
-      'orgSelectedCode',
-      'orgSelectedType',
+      'typeSelected',
       'yearSelected',
-      'orgSelected'
-    ]),
-    ...mapState({
-      orgCode: state => state.organization.codes,
-      orgName: state => state.organization.names
-    })
+      'orgSelected',
+      'orgUnits',
+      'orgType'
+    ])
   }
 }
 </script>
