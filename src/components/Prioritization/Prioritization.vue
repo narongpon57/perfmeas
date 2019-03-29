@@ -43,7 +43,7 @@
           </div>
         </div>
         <app-criteria
-          org:="orgSelected"
+          :org="orgSelected"
           v-if="isSearch">
         </app-criteria>
       </div>

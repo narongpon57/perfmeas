@@ -10,7 +10,10 @@ const initialState = () => {
 const state = initialState()
 
 const mutations = {
-  updateField
+  updateField,
+  'RESET_STATE' (state) {
+    Object.assign(state, initialState())
+  }
 }
 
 const actions = {

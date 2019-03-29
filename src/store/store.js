@@ -21,5 +21,16 @@ export default new Vuex.Store({
     organization,
     authentication,
     worklist
+  },
+  actions: {
+    resetAllState ({ commit }) {
+      commit('prioritization/RESET_STATE')
+      commit('riskAssessment/RESET_STATE')
+      commit('riskMaster/RESET_STATE')
+      commit('indicatorMaster/RESET_STATE')
+      commit('organization/RESET_STATE')
+      commit('authentication/RESET_STATE')
+      commit('worklist/RESET_STATE')
+    }
   }
 })

@@ -13,6 +13,9 @@ const mutations = {
   updateField,
   'SET_WORKLIST' (state, worklists) {
     state.worklists = worklists
+  },
+  'RESET_STATE' (state) {
+    Object.assign(state, initialState())
   }
 }
 

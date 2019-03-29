@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getField, updateField } from 'vuex-map-fields'
 import Vue from 'vue'
 
-const intitialState = () => {
+const initialState = () => {
   return {
     criteria: [],
     prioritization: [],
@@ -10,7 +10,7 @@ const intitialState = () => {
   }
 }
 
-const state = intitialState()
+const state = initialState()
 
 const mutations = {
   updateField,
@@ -33,6 +33,9 @@ const mutations = {
   },
   'SET_PRIORITY_SCORE' (state, payload) {
     state.prioritization[payload.index].priority_score = payload.priority_score
+  },
+  'RESET_STATE' (state) {
+    Object.assign(state, initialState())
   }
 }
 

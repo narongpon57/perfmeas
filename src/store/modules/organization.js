@@ -26,6 +26,9 @@ const mutations = {
     state.yearSelected = null
     state.orgSelected = null
     state.orgUnits = []
+  },
+  'RESET_STATE' (state) {
+    Object.assign(state, initialState())
   }
 }
 

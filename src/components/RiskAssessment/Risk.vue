@@ -22,7 +22,7 @@
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
-              v-if="parseInt(user.id) === assessment.org.creator.id"
+              v-if="parseInt(user.id) === org.creator.id"
               class="remove-icon"/>
           </td>
           <td>{{ item.risk.code }}</td>
@@ -33,14 +33,17 @@
           <td class="probability"><input
             type="text"
             class="form-control"
+            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
             v-model="item.probability"></td>
           <td class="impact"><input
             type="text"
             class="form-control"
+            :disabled="parseInt(user.id) !== org.creator.id"
             v-model="item.impact"></td>
           <td class="risk-score"><input
             type="text"
             class="form-control risk-score-font"
+            :disabled="parseInt(user.id) !== org.creator.id"
             v-bind:class="riskScoreStyle(item.probability * item.impact)"
             readonly="readonly"
             :value="item.probability * item.impact"></td>
@@ -50,19 +53,20 @@
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                v-if="parseInt(user.id) === assessment.org.creator.id"
+                v-if="parseInt(user.id) === org.creator.id"
                 @click="removeIndicator(index, i)"/>
               <span v-else>-</span> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
               class="float-right add-icon"
-              v-if="parseInt(user.id) === assessment.org.creator.id"
+              v-if="parseInt(user.id) === org.creator.id"
               @click="showIndicatorModal(index)"/>
           </td>
           <td class="strategy"><textarea
             row="3"
             class="form-control"
+            :disabled="parseInt(user.id) !== org.creator.id"
             v-model="item.mitigation_strategy"></textarea></td>
         </tr>
         <tr v-show="!assessment.risk_assessment.length">
@@ -73,23 +77,31 @@
     <div>
       <div
         class="col-md-12 form-group text-left"
-        v-if="parseInt(year) === new Date().getFullYear() && assessment.status !== 'Approve'">
+        v-if="parseInt(year) === new Date().getFullYear()">
         <button
           class="btn btn-info"
           @click="showRiskModal()"
-          v-if="parseInt(user.id) === assessment.org.creator.id">Add Risk</button>
+          v-if="parseInt(user.id) === org.creator.id && addRiskBtn.indexOf(assessment.status) > -1">Add Risk</button>
       </div>
       <div
         class="col-md-12 form-group text-right"
-        v-if="assessment.id && assessment.status === 'waiting for approve'">
+        v-if="org.step1_approver.id === parseInt(user.id) && managerApproveBtn.indexOf(assessment.status) > -1">
         <button
           class="btn btn-success"
-          @click="showApproveModal('Approve')"
-            v-if="parseInt(user.is_admin) || assessment.org.step1_approver.id === parseInt(user.id)">Approve</button>
+          @click="showApproveModal('Approve')">Approve</button>
         <button
           class="btn btn-warning"
-          @click="showApproveModal('Review')"
-          v-if="parseInt(user.is_admin) || assessment.org.step1_approver.id === parseInt(user.id)">Review</button>
+          @click="showApproveModal('Review')">Review</button>
+      </div>
+      <div
+        class="col-md-12 form-group text-right"
+        v-if="parseInt(user.is_admin) && adminApproveBtn.indexOf(assessment.status) > -1">
+        <button
+          class="btn btn-success"
+          @click="showApproveModal('Approve')">Approve</button>
+        <button
+          class="btn btn-warning"
+          @click="showApproveModal('Review')">Review</button>
       </div>
       <div
         class="col-md-12 form-group"
@@ -98,7 +110,7 @@
         {{ msg }}
       </div>
       <div class="col-md-12 form-group"
-        v-if="assessment.risk_assessment.length && parseInt(user.id) === assessment.org.creator.id">
+        v-if="assessment.risk_assessment.length && parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn">
         <button class="btn btn-primary" @click="save()">Save</button>
         <button class="btn btn-danger">Close</button>
       </div>
@@ -130,6 +142,7 @@ import approveModal from '../ApproveModal.vue'
 import Approval from './Approval.vue'
 import { mapFields } from 'vuex-map-fields'
 import { mapActions } from 'vuex'
+import CONSTANTS from '@/constants/assessment_status'
 
 export default {
   props: ['org', 'year'],
@@ -145,7 +158,11 @@ export default {
       isIndicatorModalVisible: false,
       isApproveModalVisible: false,
       row: '',
-      user: JSON.parse(localStorage.getItem('user'))
+      user: JSON.parse(localStorage.getItem('user')),
+      addRiskBtn: [CONSTANTS.MANAGER_REVIEW, CONSTANTS.QIKM_REVIEW, null],
+      managerApproveBtn: [CONSTANTS.INITIAL],
+      adminApproveBtn: [CONSTANTS.MANAGER_APPROVE, CONSTANTS.WAITING_FOR_APPROVE],
+      saveCloseBtn: CONSTANTS.QIKM_APPROVE
     }
   },
   created () {
@@ -178,14 +195,16 @@ export default {
       this.isApproveModalVisible = false
     },
     save () {
-      const payload = {
+      let payload = {
         assessment: this.assessment,
         org: this.org,
         year: this.year
       }
       if (this.assessment.id === null) {
+        payload['status'] = CONSTANTS.INITIAL
         this.saveRiskAssess(payload)
       } else {
+        payload['status'] = this.assessment.status === CONSTANTS.MANAGER_REVIEW ? CONSTANTS.INITIAL : CONSTANTS.WAITING_FOR_APPROVE
         this.updateRiskAssess(payload)
       }
     },

@@ -44,6 +44,7 @@
 </template>
 <script>
 import { mapFields } from 'vuex-map-fields'
+import CONSTANTS from '@/constants/assessment_status'
 
 export default {
   data () {
@@ -55,8 +56,14 @@ export default {
     },
     save () {
       const user = JSON.parse(localStorage.getItem('user'))
+      let status = null
+      if (parseInt(user.is_admin)) {
+        status = this.approve.status.toLowerCase() === 'approve' ? CONSTANTS.QIKM_APPROVE : CONSTANTS.QIKM_REVIEW
+      } else {
+        status = this.approve.status.toLowerCase() === 'approve' ? CONSTANTS.MANAGER_APPROVE : CONSTANTS.MANAGER_REVIEW
+      }
       const payload = {
-        status: this.approve.status,
+        status: status,
         description: this.approve.description,
         assessment_id: this.assessment.id,
         approve_by: parseInt(user.is_admin) ? parseInt(user.id) : null,

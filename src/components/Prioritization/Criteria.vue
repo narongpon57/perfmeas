@@ -50,9 +50,14 @@
           <td v-for="score in item.prioritization_score" :key="score.criteria_id" class="score"><input class="form-control" type="text" v-model="score.score"></td>
           <td v-bind:class="topScore(index)">{{ priorityScore(index) }}</td>
         </tr>
+        <tr v-if="!prioritization.length">
+          <td colspan="13">No Data</td>
+        </tr>
       </tbody>
     </table>
-    <div class="col-md-12 form-group text-center">
+    <div
+      class="col-md-12 form-group text-center"
+      v-if="prioritization.length && parseInt(user.id) === org.creator.id">
       <button class="btn btn-primary" @click="save()" v-if="!isSave">Save</button>
       <button class="btn btn-danger">Close</button>
     </div>
@@ -63,10 +68,14 @@
 import { mapFields } from 'vuex-map-fields'
 
 export default {
+  props: ['org'],
   data () {
     return {
-      isSave: false
+      isSave: false,
+      user: JSON.parse(localStorage.getItem('user'))
     }
+  },
+  created () {
   },
   methods: {
     priorityScore (index) {

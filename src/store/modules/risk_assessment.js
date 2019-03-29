@@ -102,7 +102,7 @@ const mutations = {
   'SET_ASSESSMENT_STATUS' (state, assessment) {
     state.assessment.status = assessment.status
   },
-  'RESET_ASSESSMENT' (state) {
+  'RESET_STATE' (state) {
     Object.assign(state, initialState())
   },
   'RESET_STATUS' (state) {
@@ -193,7 +193,7 @@ const actions = {
             localStorage.setItem('year', payload.year)
             localStorage.setItem('org', JSON.stringify(payload.org))
           } else {
-            commit('RESET_ASSESSMENT')
+            commit('RESET_STATE')
           }
 
           if (approval.length) {
@@ -209,20 +209,19 @@ const actions = {
     })
   },
   approve ({ commit }, payload) {
-    console.log(payload)
-    // return new Promise((resolve, reject) => {
-    //   axios.post('/approval', payload)
-    //     .then(res => res.data.result)
-    //     .then(approval => {
-    //       commit('ADD_APPROVAL', approval)
-    //       return axios.get('/assessment', { params: { id: payload.assessment_id } })
-    //     })
-    //     .then(res => res.data.result)
-    //     .then(assessment => {
-    //       commit('SET_ASSESSMENT_STATUS', assessment)
-    //     })
-    //     .catch(err => console.log(err))
-    // })
+    return new Promise((resolve, reject) => {
+      axios.post('/approval', payload)
+        .then(res => res.data.result)
+        .then(approval => {
+          commit('ADD_APPROVAL', approval)
+          return axios.get('/assessment', { params: { id: payload.assessment_id } })
+        })
+        .then(res => res.data.result)
+        .then(assessment => {
+          commit('SET_ASSESSMENT_STATUS', assessment)
+        })
+        .catch(err => console.log(err))
+    })
   }
 }
 
