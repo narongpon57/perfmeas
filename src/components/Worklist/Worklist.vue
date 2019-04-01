@@ -16,14 +16,14 @@
             <tbody>
               <tr
                 class="worklist-row"
-                v-for="worklist in worklists"
-                :key="worklist.id"
-                @click="getRiskAssessment(worklist)">
-                <td>{{ worklist.org.type }}</td>
-                <td>{{ worklist.org.code }}</td>
-                <td>{{ worklist.org.name }}</td>
-                <td>{{ worklist.year }}</td>
-                <td>{{ worklist.status }}</td>
+                v-for="assessment in worklists"
+                :key="assessment.id"
+                @click="search(assessment)">
+                <td>{{ assessment.org.type }}</td>
+                <td>{{ assessment.org.code }}</td>
+                <td>{{ assessment.org.name }}</td>
+                <td>{{ assessment.year }}</td>
+                <td>{{ assessment.status }}</td>
               </tr>
               <tr v-if="!worklists.length" class="text-center">
                 <td colspan="4">No Worklist</td>
@@ -37,6 +37,7 @@
 </template>
 <script>
 import { mapFields } from 'vuex-map-fields'
+import { mapActions } from 'vuex'
 
 export default {
   created () {
@@ -46,8 +47,13 @@ export default {
     }
   },
   methods: {
-    getRiskAssessment (worklist) {
-      console.log(worklist)
+    ...mapActions('riskAssessment', [
+      'searchRiskAssessment'
+    ]),
+    search (assessment) {
+      localStorage.setItem('year', assessment.year)
+      localStorage.setItem('org', JSON.stringify(assessment.org))
+      this.$router.push('/risk_assessment')
     }
   },
   computed: {

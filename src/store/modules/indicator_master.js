@@ -38,11 +38,14 @@ const actions = {
       })
       .catch(err => console.log(err))
   },
-  searchIndicator ({ commit }, indicatorCondition) {
-    axios.get('/indicators', { params: indicatorCondition })
+  searchIndicator ({ commit }, payload) {
+    axios.get('/indicator', { params: { ...payload.indicator } })
       .then(res => res.data.result)
       .then(indicators => {
-        commit('SET_INDICATORS', indicators)
+        const indicatorFilter = indicators.filter(obj => {
+          return !payload.indicatorIds.includes(obj.id)
+        })
+        commit('SET_INDICATORS', indicatorFilter)
       })
       .catch(err => console.log(err))
   },

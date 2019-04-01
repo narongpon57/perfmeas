@@ -94,8 +94,8 @@
         </div>
         <div class="row risk-table" v-if="isSearch">
           <app-risk
-            :org="orgSelected"
-            :year="yearSelected">
+            :org="orgProp"
+            :year="yearProp">
           </app-risk>
         </div>
       </div>
@@ -116,6 +116,16 @@ export default {
       year: ['2017', '2018', '2019', '2020'],
       isSearch: false,
       risks: []
+    }
+  },
+  created () {
+    const org = JSON.parse(localStorage.getItem('org'))
+    const year = localStorage.getItem('year')
+    if (org !== null && year !== null) {
+      this.$store.dispatch('riskAssessment/searchRiskAssessment', { org, year })
+        .then(() => {
+          this.isSearch = true
+        })
     }
   },
   methods: {
@@ -146,7 +156,13 @@ export default {
       'orgSelected',
       'orgUnits',
       'orgType'
-    ])
+    ]),
+    orgProp () {
+      return this.orgSelected || JSON.parse(localStorage.getItem('org'))
+    },
+    yearProp () {
+      return this.yearSelected || localStorage.getItem('year')
+    }
   }
 }
 </script>

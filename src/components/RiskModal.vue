@@ -46,10 +46,10 @@
               </div>
               <div class="row form-group">
                 <div class="col-md-6 text-right">
-                  <button class="btn btn-info" @click="search()">Search</button>
+                  <button class="btn btn-info" @click="search">Search</button>
                 </div>
                 <div class="col-md-6 text-left">
-                  <button class="btn btn-danger" @click="isSearch = false">Clear</button>
+                  <button class="btn btn-danger" @click="clear">Clear</button>
                 </div>
               </div>
               <div class="row" v-show="isSearch">
@@ -64,16 +64,20 @@
                   </thead>
                   <tbody class="text-left">
                     <tr v-for="risk in risks" :key="risk.id">
-                      <td @click="select(risk)">
+                      <td>
                         <input
-                          type="checkbox"
-                          class="form-control"/>
+                          :value="risk"
+                          v-model="selectedRisk"
+                          type="checkbox">
                       </td>
                       <td>{{ risk.risk_type }}</td>
                       <td>{{ risk.risk_group }}</td>
                       <td>{{ risk.problem_area }}</td>
                       <td>{{ risk.identified }}</td>
                       <td>{{ risk.description }}</td>
+                    </tr>
+                    <tr v-if="!risks.length" class="text-center">
+                      <td colspan="6">No Data</td>
                     </tr>
                   </tbody>
                 </table>
@@ -83,7 +87,9 @@
         </section>
         <footer class="modal1-footer">
           <slot name="footer">
-            <button class="btn btn-info" @click="selected()">Select</button>
+            <button class="btn btn-info"
+              @click="selected()"
+              v-if="risks.length">Select</button>
           </slot>
         </footer>
       </div>
@@ -95,6 +101,9 @@ import { mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
+  props: {
+    riskId: Array
+  },
   data () {
     return {
       risk_type: ['General Risk', 'Clinical Risk', 'Sepcific Risk'],
@@ -106,18 +115,34 @@ export default {
         problem_area: ''
       },
       isSearch: false,
-      risk_selected: []
+      selectedRisk: []
     }
+  },
+  created () {
   },
   methods: {
     ...mapActions('riskAssessment', ['addRiskAssess']),
     ...mapActions('riskMaster', ['searchRisk']),
     close () {
+      this.isSearch = false
+      this.risk = {
+        risk_group: '',
+        risk_type: '',
+        identified: '',
+        problem_area: ''
+      }
+      this.$store.commit('riskMaster/RESET_STATE')
       this.$emit('close')
     },
     search () {
-      this.isSearch = true
-      this.searchRisk({ ...this.risk })
+      const payload = {
+        risk: this.risk,
+        riskIds: this.riskId
+      }
+      this.searchRisk(payload)
+        .then(() => {
+          this.isSearch = true
+        })
     },
     clear () {
       this.isSearch = false
@@ -127,13 +152,13 @@ export default {
         identified: '',
         problem_area: ''
       }
-    },
-    select (risk) {
-      this.risk_selected.push(risk)
+      this.$store.commit('riskMaster/RESET_STATE')
     },
     selected () {
-      this.addRiskAssess(this.risk_selected)
-      this.risk_selected = []
+      this.addRiskAssess(this.selectedRisk)
+      this.selectedRisk = []
+      this.isSearch = false
+      this.$store.commit('riskMaster/RESET_STATE')
       this.$emit('close')
     }
   },

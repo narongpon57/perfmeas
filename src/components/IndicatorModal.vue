@@ -46,10 +46,10 @@
               </div>
               <div class="row form-group">
                 <div class="col-md-6 text-right">
-                  <button class="btn btn-info" @click="search()">Search</button>
+                  <button class="btn btn-info" @click="search">Search</button>
                 </div>
                 <div class="col-md-6 text-left">
-                  <button class="btn btn-danger" @click="isSearch = false">Clear</button>
+                  <button class="btn btn-danger" @click="clear">Clear</button>
                 </div>
               </div>
               <div class="row" v-show="isSearch">
@@ -65,10 +65,11 @@
                   </thead>
                   <tbody class="text-left">
                     <tr v-for="indicator in indicators" :key="indicator.id">
-                      <td @click="select(indicator)">
+                      <td>
                         <input
                           type="checkbox"
-                          class="form-control"/>
+                          :value="indicator"
+                          v-model="selectedIndicator"/>
                       </td>
                       <td>{{ indicator.code }}</td>
                       <td>{{ indicator.name }}</td>
@@ -76,6 +77,9 @@
                       <td>{{ indicator.divisor }}</td>
                       <td>{{ indicator.formular }}</td>
                       <td>{{ indicator.operator }}</td>
+                    </tr>
+                    <tr v-if="!indicators.length" class="text-center">
+                      <td colspan="7">No Data</td>
                     </tr>
                   </tbody>
                 </table>
@@ -85,7 +89,9 @@
         </section>
         <footer class="modal1-footer">
           <slot name="footer">
-            <button class="btn btn-info" @click="selected()">Select</button>
+            <button class="btn btn-info"
+              @click="selected()"
+              v-if="indicators.length">Select</button>
           </slot>
         </footer>
       </div>
@@ -97,7 +103,10 @@ import { mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
-  props: ['risk_index'],
+  props: {
+    riskIndex: Number,
+    indicatorId: Array
+  },
   data () {
     return {
       standard: ['Disease-Specific Care Programs', 'Facility Management and Safety', 'Hospital Management', 'Patient Care Process', 'Work Process'],
@@ -110,18 +119,32 @@ export default {
         measurement_domain: ''
       },
       isSearch: false,
-      indicator_selected: []
+      selectedIndicator: []
     }
   },
   methods: {
     ...mapActions('indicatorMaster', ['searchIndicator']),
     ...mapActions('riskAssessment', ['addRiskIndicator']),
     close () {
+      this.isSearch = false
+      this.indicator = {
+        name: '',
+        indicator_type: '',
+        standard: '',
+        measurement_domain: ''
+      }
+      this.$store.commit('indicatorMaster/RESET_STATE')
       this.$emit('close')
     },
     search () {
-      this.isSearch = true
-      this.searchIndicator({ ...this.indicator })
+      const payload = {
+        indicator: this.indicator,
+        indicatorIds: this.indicatorId
+      }
+      this.searchIndicator(payload)
+        .then(() => {
+          this.isSearch = true
+        })
     },
     clear () {
       this.isSearch = false
@@ -131,17 +154,17 @@ export default {
         standard: '',
         measurement_domain: ''
       }
-    },
-    select (indicator) {
-      this.indicator_selected.push(indicator)
+      this.$store.commit('indicatorMaster/RESET_STATE')
     },
     selected () {
       const payload = {
-        indicators: this.indicator_selected,
-        risk_index: this.risk_index
+        indicators: this.selectedIndicator,
+        risk_index: this.riskIndex
       }
       this.addRiskIndicator(payload)
-      this.indicator_selected = []
+      this.selectedIndicator = []
+      this.isSearch = false
+      this.$store.commit('indicatorMaster/RESET_STATE')
       this.$emit('close')
     }
   },

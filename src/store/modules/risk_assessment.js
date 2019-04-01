@@ -18,7 +18,8 @@ const initialState = () => {
       approve_by: null
     },
     status: false,
-    msg: ''
+    msg: '',
+    isAssessmentSearch: false
   }
 }
 
@@ -58,6 +59,9 @@ const mutations = {
   'SET_RETURN_MSG' (state, { msg, success }) {
     state.msg = msg
     state.success = success
+  },
+  'SET_SHOW_SEARH_TABLE' (state, bool) {
+    state.isAssessmentSearch = bool
   },
   'SET_SAVE_ASSESSMENT' (state, assessment) {
     const riskAssessment = state.assessment.risk_assessment

@@ -43,7 +43,8 @@
           </div>
         </div>
         <app-criteria
-          :org="orgSelected"
+          :org="orgProp"
+          :year="yearProp"
           v-if="isSearch">
         </app-criteria>
       </div>
@@ -105,7 +106,13 @@ export default {
       'orgSelected',
       'orgUnits',
       'orgType'
-    ])
+    ]),
+    orgProp () {
+      return this.orgSelected || JSON.parse(localStorage.getItem('org'))
+    },
+    yearProp () {
+      return this.yearSelected || localStorage.getItem('year')
+    }
   },
   filters: {
     wordWrap (value) {

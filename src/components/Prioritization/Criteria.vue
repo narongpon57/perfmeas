@@ -56,10 +56,14 @@
       </tbody>
     </table>
     <div
-      class="col-md-12 form-group text-center"
       v-if="prioritization.length && parseInt(user.id) === org.creator.id">
-      <button class="btn btn-primary" @click="save()" v-if="!isSave">Save</button>
-      <button class="btn btn-danger">Close</button>
+      <div class="col-md-12 form-group text-right">
+        <button class="btn btn-info" @click="save()" v-if="!isSave">Save</button>
+      </div>
+      <div class="col-md-12 form-group text-center">
+        <button class="btn btn-primary" @click="submit()" v-if="!isSave">Submit</button>
+        <button class="btn btn-danger">Close</button>
+      </div>
     </div>
   </div>
 </template>
@@ -68,7 +72,9 @@
 import { mapFields } from 'vuex-map-fields'
 
 export default {
-  props: ['org'],
+  props: {
+    org: Object
+  },
   data () {
     return {
       isSave: false,
@@ -94,6 +100,12 @@ export default {
       return index === 0 && this.prioritization[index].priority_score > 0 ? 'top-score-text' : ''
     },
     save () {
+      this.$store.dispatch('prioritization/savePrioritization', {
+        prioritization: this.prioritization
+      })
+      this.isSave = false
+    },
+    submit () {
       this.$store.dispatch('prioritization/savePrioritization', {
         prioritization: this.prioritization
       })

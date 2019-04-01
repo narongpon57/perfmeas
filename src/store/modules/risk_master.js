@@ -38,13 +38,19 @@ const actions = {
       })
       .catch(err => console.log(err))
   },
-  searchRisk ({ commit }, riskCondition) {
-    axios.get('/risk', { params: riskCondition })
-      .then(res => res.data.result)
-      .then(risks => {
-        commit('SET_RISKS', risks)
-      })
-      .catch(err => console.log(err))
+  searchRisk ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      axios.get('/risk', { params: { ...payload.risk } })
+        .then(res => res.data.result)
+        .then(risks => {
+          const risksFilter = risks.filter(obj => {
+            return !payload.riskIds.includes(obj.id)
+          })
+          commit('SET_RISKS', risksFilter)
+          resolve()
+        })
+        .catch(err => console.log(err))
+    })
   },
   getRisks ({ commit }) {
     axios.get('/risks')

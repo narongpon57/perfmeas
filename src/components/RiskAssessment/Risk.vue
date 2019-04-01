@@ -22,7 +22,7 @@
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
-              v-if="parseInt(user.id) === org.creator.id"
+              v-if="parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn"
               class="remove-icon"/>
           </td>
           <td>{{ item.risk.code }}</td>
@@ -38,12 +38,12 @@
           <td class="impact"><input
             type="text"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id"
+            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
             v-model="item.impact"></td>
           <td class="risk-score"><input
             type="text"
             class="form-control risk-score-font"
-            :disabled="parseInt(user.id) !== org.creator.id"
+            :disabled="parseInt(user.id) !== org.creator.id && assessment.status !== saveCloseBtn"
             v-bind:class="riskScoreStyle(item.probability * item.impact)"
             readonly="readonly"
             :value="item.probability * item.impact"></td>
@@ -53,20 +53,20 @@
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                v-if="parseInt(user.id) === org.creator.id"
+                v-if="parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn"
                 @click="removeIndicator(index, i)"/>
               <span v-else>-</span> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
               class="float-right add-icon"
-              v-if="parseInt(user.id) === org.creator.id"
+              v-if="parseInt(user.id) === org.creator.id || assessment.status === saveCloseBtn"
               @click="showIndicatorModal(index)"/>
           </td>
           <td class="strategy"><textarea
             row="3"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id"
+            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
             v-model="item.mitigation_strategy"></textarea></td>
         </tr>
         <tr v-show="!assessment.risk_assessment.length">
@@ -122,11 +122,13 @@
     <app-risk-modal
       v-show="isModalVisible"
       @close="closeRiskModal"
+      :riskId="filterRiskId"
     />
     <app-indicator-modal
       v-show="isIndicatorModalVisible"
       @close="closeIndicatorModal"
-      :risk_index="row"
+      :riskIndex="row"
+      :indicatorId="indicatorId"
     />
     <app-approve-modal
       v-show="isApproveModalVisible"
@@ -145,7 +147,10 @@ import { mapActions } from 'vuex'
 import CONSTANTS from '@/constants/assessment_status'
 
 export default {
-  props: ['org', 'year'],
+  props: {
+    org: Object,
+    year: String
+  },
   components: {
     'app-risk-modal': riskModal,
     'app-indicator-modal': indicatorModal,
@@ -157,7 +162,8 @@ export default {
       isModalVisible: false,
       isIndicatorModalVisible: false,
       isApproveModalVisible: false,
-      row: '',
+      row: 0,
+      indicatorId: [],
       user: JSON.parse(localStorage.getItem('user')),
       addRiskBtn: [CONSTANTS.MANAGER_REVIEW, CONSTANTS.QIKM_REVIEW, null],
       managerApproveBtn: [CONSTANTS.INITIAL],
@@ -181,7 +187,10 @@ export default {
       this.isModalVisible = false
     },
     showIndicatorModal (index) {
-      this.row = index
+      this.row = parseInt(index)
+      this.indicatorId = this.assessment.risk_assessment[index].risk_indicator.map(obj => {
+        return obj.indicator.id
+      })
       this.isIndicatorModalVisible = true
     },
     closeIndicatorModal () {
@@ -240,7 +249,12 @@ export default {
       'msg',
       'approval',
       'approve'
-    ])
+    ]),
+    filterRiskId () {
+      return this.assessment.risk_assessment.map(obj => {
+        return obj.risk.id
+      })
+    }
   }
 }
 </script>
