@@ -43,9 +43,13 @@ const actions = {
       axios.get('/risk', { params: { ...payload.risk } })
         .then(res => res.data.result)
         .then(risks => {
-          const risksFilter = risks.filter(obj => {
-            return !payload.riskIds.includes(obj.id)
-          })
+          let risksFilter = risks
+          if (payload.riskIds !== null) {
+            risksFilter = risks.filter(obj => {
+              console.log(payload.riskIds.includes(obj.id))
+              return !payload.riskIds.includes(obj.id)
+            })
+          }
           commit('SET_RISKS', risksFilter)
           resolve()
         })

@@ -22,7 +22,7 @@
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
-              v-if="parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn"
+              v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
               class="remove-icon"/>
           </td>
           <td>{{ item.risk.code }}</td>
@@ -33,17 +33,17 @@
           <td class="probability"><input
             type="text"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
+            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
             v-model="item.probability"></td>
           <td class="impact"><input
             type="text"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
+            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
             v-model="item.impact"></td>
           <td class="risk-score"><input
             type="text"
             class="form-control risk-score-font"
-            :disabled="parseInt(user.id) !== org.creator.id && assessment.status !== saveCloseBtn"
+            :disabled="true"
             v-bind:class="riskScoreStyle(item.probability * item.impact)"
             readonly="readonly"
             :value="item.probability * item.impact"></td>
@@ -53,20 +53,20 @@
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                v-if="parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn"
+                v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
                 @click="removeIndicator(index, i)"/>
               <span v-else>-</span> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
               class="float-right add-icon"
-              v-if="parseInt(user.id) === org.creator.id || assessment.status === saveCloseBtn"
+              v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
               @click="showIndicatorModal(index)"/>
           </td>
           <td class="strategy"><textarea
             row="3"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || assessment.status === saveCloseBtn"
+            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
             v-model="item.mitigation_strategy"></textarea></td>
         </tr>
         <tr v-show="!assessment.risk_assessment.length">
@@ -110,7 +110,7 @@
         {{ msg }}
       </div>
       <div class="col-md-12 form-group"
-        v-if="assessment.risk_assessment.length && parseInt(user.id) === org.creator.id && assessment.status !== saveCloseBtn">
+        v-if="assessment.risk_assessment.length && parseInt(user.id) === org.creator.id && addRiskBtn.indexOf(assessment.status) > -1">
         <button class="btn btn-primary" @click="save()">Save</button>
         <button class="btn btn-danger">Close</button>
       </div>
@@ -168,7 +168,7 @@ export default {
       addRiskBtn: [CONSTANTS.MANAGER_REVIEW, CONSTANTS.QIKM_REVIEW, null],
       managerApproveBtn: [CONSTANTS.INITIAL],
       adminApproveBtn: [CONSTANTS.MANAGER_APPROVE, CONSTANTS.WAITING_FOR_APPROVE],
-      saveCloseBtn: CONSTANTS.QIKM_APPROVE
+      saveCloseBtn: [CONSTANTS.QIKM_APPROVE, CONSTANTS.MANAGER_APPROVE]
     }
   },
   created () {

@@ -29,7 +29,7 @@
           </div>
           <div class="row form-group">
             <div class="col-md-6 text-right">
-              <button class="btn btn-info" @click="search()">Search</button>
+              <button class="btn btn-info" @click="search">Search</button>
             </div>
             <div class="col-md-6">
               <button class="btn btn-danger" @click="clear()">Clear</button>
@@ -82,8 +82,15 @@ export default {
   },
   methods: {
     search () {
+      const payload = {
+        risk: this.risk,
+        riskIds: null
+      }
       this.isSearch = true
-      this.$store.dispatch('riskMaster/searchRisk', { ...this.risk })
+      this.$store.dispatch('riskMaster/searchRisk', payload)
+        .then(() => {
+          this.search = true
+        })
     },
     clear () {
       this.isSearch = false

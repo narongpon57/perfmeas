@@ -3,7 +3,7 @@ import Layout from './components/Layout.vue'
 import Worklist from './components/Worklist/Worklist.vue'
 import RiskAssessment from './components/RiskAssessment/RiskAssessment.vue'
 import Prioritization from './components/Prioritization/Prioritization.vue'
-import PerfMeas from './components/PerfMeas/PerfMeas.vue'
+import PerfMeas from './components/PerfMeas/SearchPerfMeas.vue'
 import Login from './components/Authentication/Login.vue'
 
 import Domain from './components/Admin/Domain/Domain.vue'
@@ -66,12 +66,12 @@ export const routes = [
       { path: 'prioritization_criteria', component: Criteria },
       { path: 'prioritization_criteria_form', component: CriteriaForm },
       { path: 'user_management', component: User },
-      { path: 'user_management_form', component: UserForm },
+      { path: 'user_management_form/:id?', component: UserForm },
       { path: 'approve_list', component: Approve },
       { path: 'period_management', component: Period },
       { path: 'period_management_form', component: PeriodForm },
       { path: 'organization_management', component: Organization },
-      { path: 'organization_management_form', component: OrganizationForm }
+      { path: 'organization_management_form/:id?', component: OrganizationForm }
     ]
   },
   { path: '/login',

@@ -8,6 +8,8 @@ import indicatorMaster from './modules/indicator_master'
 import organization from './modules/organization'
 import authentication from './modules/authentication'
 import worklist from './modules/worklist'
+import user from './modules/user'
+import performanceMeasurement from './modules/performance_measurement'
 
 Vue.use(Vuex)
 
@@ -20,7 +22,9 @@ export default new Vuex.Store({
     indicatorMaster,
     organization,
     authentication,
-    worklist
+    worklist,
+    user,
+    performanceMeasurement
   },
   actions: {
     resetAllState ({ commit }) {
@@ -31,6 +35,8 @@ export default new Vuex.Store({
       commit('organization/RESET_STATE')
       commit('authentication/RESET_STATE')
       commit('worklist/RESET_STATE')
+      commit('user/RESET_STATE')
+      commit('performanceMeasurement/RESET_STATE')
     }
   }
 })

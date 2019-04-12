@@ -47,7 +47,12 @@
           <td class="">{{ item.code }}</td>
           <td class="text-left">{{ item.name }}</td>
           <td class="">{{ item.indicator_type }}</td>
-          <td v-for="score in item.prioritization_score" :key="score.criteria_id" class="score"><input class="form-control" type="text" v-model="score.score"></td>
+          <td v-for="(score, i) in item.prioritization_score" :key="score.criteria_id" class="score">
+            <!-- <input class="form-control" type="text" v-model="score.score"> -->
+            <select v-model="score.score" class="form-control">
+              <option v-for="scale in criteria[i].criteriaScales" :value="scale.value" :key="scale.id">{{ scale.value }}</option>
+            </select>
+          </td>
           <td v-bind:class="topScore(index)">{{ priorityScore(index) }}</td>
         </tr>
         <tr v-if="!prioritization.length">
@@ -133,10 +138,9 @@ export default {
     font-size: 12px;
     tr {
       td {
-        input {
+        select {
           margin: 0 auto;
-          width: 50%;
-          height: 30px;
+          width: 70%;
           text-align: center;
         }
       }

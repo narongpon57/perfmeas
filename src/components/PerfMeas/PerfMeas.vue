@@ -1,209 +1,257 @@
 <template>
-  <div>
-    <div class="container-fluid">
-      <div class="panel content bg-content">
-        <div class="topic headline">Performance Measurement</div>
-        <div class="container">
-          <div class="row form-group">
-            <div class="col-md-6">
-              <label for="" class="font-normal">Organization Type </label>
-              <v-select v-model="orgTypeSelected" :options="orgType"></v-select>
-            </div>
-            <div class="col-md-6">
-              <label for="" class="font-normal">Organization Code </label>
-              <v-select v-model="orgCodeSelected" :options="orgCode"></v-select>
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-md-6">
-              <label for="" class="font-normal">Organization Name </label>
-              <v-select v-model="orgNameSelected" :options="orgName"></v-select>
-            </div>
-            <div class="col-md-6">
-              <label for="" class="font-normal">Data of Year </label>
-              <v-select v-model="yearSelected" :options="year"></v-select>
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-md-6 text-right">
-              <button class="btn btn-info">Search</button>
-            </div>
-            <div class="col-md-6">
-              <button class="btn btn-danger">Clear</button>
-            </div>
-          </div>
-        </div>
-        <div class="perfmeas-table">
-          <table class="table table-bordered table-bg table-sm text-center">
-            <thead class="table-head">
-              <th></th>
-              <th>รหัส</th>
-              <th>ชื่อตัวขี้วัด</th>
-              <th>ตัวตั้ง (a) / ตัวหาร (b)</th>
-              <th>สูตรการคำนวณ</th>
-              <th>หน่วย</th>
-              <th>ระยะเวลา</th>
-              <th>เครื่องหมาย</th>
-              <th>เป้าหมาย</th>
-              <th style="width:4%;">ม.ค.</th>
-              <th style="width:4%;">ก.พ.</th>
-              <th style="width:4%;">มี.ค.</th>
-              <th style="width:4%;">เม.ย.</th>
-              <th style="width:4%;">พ.ค.</th>
-              <th style="width:4%;">มิ.ย.</th>
-              <th style="width:4%;">ก.ค.</th>
-              <th style="width:4%;">ส.ค.</th>
-              <th style="width:4%;">ก.ย.</th>
-              <th style="width:4%;">ต.ค.</th>
-              <th style="width:4%;">พ.ย.</th>
-              <th style="width:4%;">ธ.ค.</th>
-              <th>YTD</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td rowspan="2"><i class="fas fa-times"></i></td>
-                <td rowspan="2">BHQ10283666</td>
-                <td rowspan="2">% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                <td>จำนวนผู้ให้คะแนนความพึงพอใจสูงสุด ความรวดเร็วในการให้ข้อมูล/จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด เปอร์เซ็น</td>
-                <td rowspan="2">(a/b)*100</td>
-                <td rowspan="2">ร้อยละ</td>
-                <td rowspan="2">รายเดือน</td>
-                <td rowspan="2">></td>
-                <td rowspan="2">50.00</td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td>0.00</td>
-              </tr>
-              <tr>
-                <td>จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด</td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td>0.00</td>
-              </tr>
-              <tr style="background-color: antiquewhite;">
-                <td colspan="9"></td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td rowspan="2"><i class="fas fa-times"></i></td>
-                <td rowspan="2">BHQ10283666</td>
-                <td rowspan="2">% ความพึงพอใจมาก ความรวดเร็วในการให้ข้อมูล</td>
-                <td>จำนวนผู้ให้คะแนนความพึงพอใจสูงสุด ความรวดเร็วในการให้ข้อมูล/จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด เปอร์เซ็น</td>
-                <td rowspan="2">(a/b)*100</td>
-                <td rowspan="2">ร้อยละ</td>
-                <td rowspan="2">รายเดือน</td>
-                <td rowspan="2">></td>
-                <td rowspan="2">50.00</td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td>0.00</td>
-              </tr>
-              <tr>
-                <td>จำนวนลูกค้าที่โทรสอบถามความพึงพอใจทั้งหมด</td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td>0.00</td>
-              </tr>
-              <tr style="background-color: antiquewhite;">
-                <td colspan="9"></td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <div class="perfmeas-table">
+    <table class="table table-bordered table-bg table-sm text-center">
+      <thead class="table-head">
+        <th></th>
+        <th>รหัส</th>
+        <th>ชื่อตัวขี้วัด</th>
+        <th>ตัวตั้ง (a) / ตัวหาร (b)</th>
+        <th>สูตรการคำนวณ</th>
+        <th>เครื่องหมาย</th>
+        <th>เป้าหมาย</th>
+        <th style="width:4%;">ม.ค.</th>
+        <th style="width:4%;">ก.พ.</th>
+        <th style="width:4%;">มี.ค.</th>
+        <th style="width:4%;">เม.ย.</th>
+        <th style="width:4%;">พ.ค.</th>
+        <th style="width:4%;">มิ.ย.</th>
+        <th style="width:4%;">ก.ค.</th>
+        <th style="width:4%;">ส.ค.</th>
+        <th style="width:4%;">ก.ย.</th>
+        <th style="width:4%;">ต.ค.</th>
+        <th style="width:4%;">พ.ย.</th>
+        <th style="width:4%;">ธ.ค.</th>
+        <th>YTD</th>
+      </thead>
+      <tbody>
+        <template v-for="(item, index) in performanceMeasurement">
+          <tr :key="item.id">
+            <td rowspan="2"><font-awesome-icon
+                icon="times"
+                class="remove-icon"
+                @click="remove(index)"
+                v-if="index !== 0 && item.summary_result === null"/>
+            </td>
+            <td rowspan="2">{{ item.code }}</td>
+            <td rowspan="2">{{ item.name }}</td>
+            <td>{{ item.multiplier }}</td>
+            <td rowspan="2">{{ item.formular }}</td>
+            <td rowspan="2">{{ item.operator }}</td>
+            <td rowspan="2">{{ item.target }}</td>
+            <td><input type="text" v-model="item.jan_multiplier_value"></td>
+            <td><input type="text" v-model="item.feb_multiplier_value"></td>
+            <td><input type="text" v-model="item.mar_multiplier_value"></td>
+            <td><input type="text" v-model="item.apr_multiplier_value"></td>
+            <td><input type="text" v-model="item.may_multiplier_value"></td>
+            <td><input type="text" v-model="item.jun_multiplier_value"></td>
+            <td><input type="text" v-model="item.jul_multiplier_value"></td>
+            <td><input type="text" v-model="item.aug_multiplier_value"></td>
+            <td><input type="text" v-model="item.sep_multiplier_value"></td>
+            <td><input type="text" v-model="item.oct_multiplier_value"></td>
+            <td><input type="text" v-model="item.nov_multiplier_value"></td>
+            <td><input type="text" v-model="item.dec_multiplier_value"></td>
+            <td>{{ ytdMultiplier(item) }}</td>
+          </tr>
+          <tr :key="item.risk_assessment_indicator_id">
+            <td>{{ item.divisor }}</td>
+            <td><input type="text" v-model="item.jan_divisor_value"></td>
+            <td><input type="text" v-model="item.feb_divisor_value"></td>
+            <td><input type="text" v-model="item.mar_divisor_value"></td>
+            <td><input type="text" v-model="item.apr_divisor_value"></td>
+            <td><input type="text" v-model="item.may_divisor_value"></td>
+            <td><input type="text" v-model="item.jun_divisor_value"></td>
+            <td><input type="text" v-model="item.jul_divisor_value"></td>
+            <td><input type="text" v-model="item.aug_divisor_value"></td>
+            <td><input type="text" v-model="item.sep_divisor_value"></td>
+            <td><input type="text" v-model="item.oct_divisor_value"></td>
+            <td><input type="text" v-model="item.nov_divisor_value"></td>
+            <td><input type="text" v-model="item.dec_divisor_value"></td>
+            <td>{{ ydtDivisor(item) }}</td>
+          </tr>
+          <tr :key="item.code" style="background-color: antiquewhite;">
+            <td colspan="7"></td>
+            <td :class="checkTarget(item.jan_multiplier_value, item.jan_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.jan_multiplier_value, item.jan_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.feb_multiplier_value, item.feb_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.feb_multiplier_value, item.feb_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.mar_multiplier_value, item.mar_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.mar_multiplier_value, item.mar_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.apr_multiplier_value, item.apr_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.apr_multiplier_value, item.apr_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.may_multiplier_value, item.may_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.may_multiplier_value, item.may_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.jun_multiplier_value, item.jun_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.jun_multiplier_value, item.jun_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.jul_multiplier_value, item.jul_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.jul_multiplier_value, item.jul_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.aug_multiplier_value, item.aug_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.aug_multiplier_value, item.aug_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.sep_multiplier_value, item.sep_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.sep_multiplier_value, item.sep_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.oct_multiplier_value, item.oct_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.oct_multiplier_value, item.oct_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.nov_multiplier_value, item.nov_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.nov_multiplier_value, item.nov_divisor_value, item.unit) }}</td>
+            <td :class="checkTarget(item.dec_multiplier_value, item.dec_divisor_value, item.unit, item.operator, parseInt(item.target))">{{ calPerfMonth(item.dec_multiplier_value, item.dec_divisor_value, item.unit) }}</td>
+            <td :class="checkTargetSummary(item, item.unit, item.operator, item.target)">{{ ytdSummary(item, item.unit, index) }}</td>
+          </tr>
+        </template>
+        <tr v-if="!performanceMeasurement.length">
+          <td colspan="20">No Data</td>
+        </tr>
+      </tbody>
+    </table>
+     <div>
+      <div class="col-md-12 form-group">
+        <button class="btn btn-info" @click="showModal">Add Indicator</button>
+      </div>
+      <div class="col-md-12 form-group text-center">
+        <button class="btn btn-primary" @click="save">Save</button>
+        <button class="btn btn-danger">Close</button>
       </div>
     </div>
+    <app-ind-perf-modal
+      v-show="isModalVisible"
+      @close="closeModal"
+      :assessmentId="performanceMeasurement[0].assessment_id"
+      :riskIndicatorId="getRiskIndicatorId"
+    />
   </div>
 </template>
 
 <script>
+import { mapFields } from 'vuex-map-fields'
+import { mapActions } from 'vuex'
+import IndicatorPerformanceModal from '../IndicatorPerformanceModal.vue'
+
 export default {
+  props: {
+    org: Object
+  },
+  components: {
+    appIndPerfModal: IndicatorPerformanceModal
+  },
   data () {
     return {
-      orgType: ['Bu', 'Department'],
-      orgCode: ['BHQ', 'GLS001', 'GLS002', 'GLS003'],
-      orgName: ['BU.Back Office', 'BU.OPD', 'BU.IPD'],
-      year: ['2017', '2018', '2019', '2020'],
-      orgTypeSelected: '',
-      orgCodeSelected: '',
-      orgNameSelected: '',
-      yearSelected: '',
-      isSearch: false
+      isModalVisible: false
+    }
+  },
+  methods: {
+    ...mapActions('performanceMeasurement', [
+      'savePerformanceMeasurement'
+    ]),
+    showModal () {
+      this.$store.dispatch('performanceMeasurement/searchPerformanceIndicator', {
+        assessmentId: this.getAssessmentId,
+        riskIndicatorId: this.getRiskIndicatorId
+      })
+        .then(() => {
+          this.isModalVisible = true
+        })
+    },
+    closeModal () {
+      this.isModalVisible = false
+    },
+    remove (index) {
+      let r = confirm('Do you want to delete this item ?')
+      if (r) {
+        this.$store.commit('performanceMeasurement/REMOVE_PERFORMANCE_MEASUREMENT', index)
+      }
+    },
+    save () {
+      this.savePerformanceMeasurement(this.performanceMeasurement)
+    },
+    calPerfMonth (multiplier, divisor, unit) {
+      return isNaN((multiplier / divisor) * unit) ? 'N/A' : ((multiplier / divisor) * unit).toFixed(2)
+    },
+    ytdMultiplier (perf) {
+      return (Number(perf.jan_multiplier_value) + Number(perf.feb_multiplier_value) + Number(perf.mar_multiplier_value) + Number(perf.apr_multiplier_value) + Number(perf.may_multiplier_value) + Number(perf.jun_multiplier_value) + Number(perf.jul_multiplier_value) + Number(perf.aug_multiplier_value) + Number(perf.sep_multiplier_value) + Number(perf.oct_multiplier_value) + Number(perf.nov_multiplier_value) + Number(perf.dec_multiplier_value)).toFixed(2)
+    },
+    ydtDivisor (perf) {
+      return (Number(perf.jan_divisor_value) + Number(perf.feb_divisor_value) + Number(perf.mar_divisor_value) + Number(perf.apr_divisor_value) + Number(perf.may_divisor_value) + Number(perf.jun_divisor_value) + Number(perf.jul_divisor_value) + Number(perf.aug_divisor_value) + Number(perf.sep_divisor_value) + Number(perf.oct_divisor_value) + Number(perf.nov_divisor_value) + Number(perf.dec_divisor_value)).toFixed(2)
+    },
+    ytdSummary (perf, unit, index) {
+      const result = {
+        ytd: isNaN((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit) ? null : ((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit).toFixed(2),
+        index: index
+      }
+      this.$store.commit('performanceMeasurement/SET_SUMMARY_RESULT', result)
+      return isNaN((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit) ? 'N/A' : ((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit).toFixed(2)
+    },
+    checkTarget (multiplier, divisor, unit, operator, target) {
+      let activeClass = ''
+      if (!isNaN((multiplier / divisor) * unit)) {
+        let ytdMonth = (multiplier / divisor) * unit
+        let onTarget = ''
+        switch (operator) {
+          case '=':
+            onTarget = ytdMonth === target
+            break
+          case '>':
+            onTarget = ytdMonth > target
+            break
+          case '<':
+            onTarget = ytdMonth < target
+            break
+          case '>=':
+            onTarget = ytdMonth >= target
+            break
+          case '<=':
+            onTarget = ytdMonth >= target
+            break
+          case '!=':
+            onTarget = ytdMonth !== target
+            break
+          default:
+            onTarget = ''
+        }
+        activeClass = onTarget ? 'target' : 'no-target'
+      }
+      return activeClass
+    },
+    checkTargetSummary (perf, unit, operator, target) {
+      let activeClass = ''
+      let ytdMonth = (this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit
+      if (!isNaN(ytdMonth)) {
+        let onTarget = ''
+        switch (operator) {
+          case '=':
+            onTarget = ytdMonth === target
+            break
+          case '>':
+            onTarget = ytdMonth > target
+            break
+          case '<':
+            onTarget = ytdMonth < target
+            break
+          case '>=':
+            onTarget = ytdMonth >= target
+            break
+          case '<=':
+            onTarget = ytdMonth >= target
+            break
+          case '!=':
+            onTarget = ytdMonth !== target
+            break
+          default:
+            onTarget = ''
+        }
+        activeClass = onTarget ? 'target' : 'no-target'
+      }
+      return activeClass
+    }
+  },
+  computed: {
+    ...mapFields('performanceMeasurement', [
+      'performanceMeasurement'
+    ]),
+    getRiskIndicatorId () {
+      return this.performanceMeasurement.map(obj => {
+        return obj.risk_assessment_indicator_id
+      })
+    },
+    getAssessmentId () {
+      return this.performanceMeasurement[0].assessment_id
+    }
+  },
+  filters: {
+    fixDecimal (value) {
+      return value.toFixed()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.form-group {
-  button {
-    margin: 0 5px;
-  }
-}
 .perfmeas-table {
   table {
     font-size: 12px;
@@ -220,5 +268,18 @@ export default {
       }
     }
   }
+}
+.target {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+}
+.no-target {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+}
+.btn-primary {
+  margin: 0 10px;
 }
 </style>

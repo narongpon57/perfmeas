@@ -7,7 +7,16 @@ const initialState = () => {
     typeSelected: null,
     yearSelected: null,
     orgSelected: null,
-    orgUnits: []
+    orgUnits: [],
+    orgs: [],
+    org: {
+      id: null,
+      type: null,
+      code: null,
+      name: null,
+      creator: [],
+      step1_approver: []
+    }
   }
 }
 
@@ -27,6 +36,19 @@ const mutations = {
     state.orgSelected = null
     state.orgUnits = []
   },
+  'SET_ORGS_MASTER' (state, orgUnits) {
+    state.orgs = orgUnits
+  },
+  'SET_ORG_MASTER' (state, org) {
+    state.org = {
+      type: org.type,
+      code: org.code,
+      name: org.name,
+      creator: org.creator,
+      step1_approver: org.step1_approver,
+      label: org.label
+    }
+  },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
   }
@@ -43,8 +65,19 @@ const actions = {
       .then(orgUnits => {
         commit('RESET_ORG')
         commit('SET_ORGANIZATION_UNIT', orgUnits)
+        commit('SET_ORGS_MASTER', orgUnits)
       })
       .catch(err => console.log(err))
+  },
+  searchOrgById ({ commit }, id) {
+    axios.get(`/organization_unit/${id}`)
+      .then(res => res.data.result)
+      .then(org => {
+        commit('SET_ORG_MASTER', org)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 
