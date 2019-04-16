@@ -6,7 +6,9 @@ const initialState = () => {
   return {
     criteria: [],
     prioritization: [],
-    count: 0
+    count: 0,
+    perf: [],
+    msg: null
   }
 }
 
@@ -31,8 +33,14 @@ const mutations = {
       })
     }
   },
+  'SET_PERF' (state, perf) {
+    state.perf = perf
+  },
   'SET_PRIORITY_SCORE' (state, payload) {
     state.prioritization[payload.index].priority_score = payload.priority_score
+  },
+  'SET_RETURN_MSG' (state, msg) {
+    state.msg = msg
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
@@ -53,10 +61,18 @@ const actions = {
       org_id: payload.org.id,
       year: payload.year
     }
+
+    const perf = axios.get('/performance_measurement', { params: search })
+    const prioritization = axios.get('/prioritization', { params: search })
     return new Promise((resolve, reject) => {
-      axios.get('/prioritization', { params: search })
-        .then(res => res.data.result)
-        .then(prioritization => {
+      Promise.all([
+        perf,
+        prioritization
+      ])
+        .then(res => {
+          const perf = res[0].data.result
+          const prioritization = res[1].data.result
+          commit('SET_PERF', perf)
           commit('SET_PRIORITIZATION', prioritization)
           if (prioritization.length) {
             for (let [i, item] of Object.entries(prioritization)) {
@@ -76,13 +92,21 @@ const actions = {
           }
           resolve()
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+        })
     })
   },
-  savePrioritization ({ commit, dispatch }, payload) {
+  savePrioritization ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       axios.post('/prioritization', payload)
         .then(res => {
+          let msg = 'Save Success'
+          if (payload.isDraft) {
+            msg = 'Save Draft Success'
+          }
+          commit('SET_RETURN_MSG', msg)
+          resolve()
         })
         .catch(err => {
           console.log(err)

@@ -90,7 +90,7 @@
         </tr>
       </tbody>
     </table>
-     <div>
+     <div v-if="performanceMeasurement.length">
       <div class="col-md-12 form-group">
         <button class="btn btn-info" @click="showModal">Add Indicator</button>
       </div>
@@ -102,7 +102,7 @@
     <app-ind-perf-modal
       v-show="isModalVisible"
       @close="closeModal"
-      :assessmentId="performanceMeasurement[0].assessment_id"
+      :assessmentId="getAssessmentId"
       :riskIndicatorId="getRiskIndicatorId"
     />
   </div>
@@ -240,7 +240,10 @@ export default {
       })
     },
     getAssessmentId () {
-      return this.performanceMeasurement[0].assessment_id
+      if (this.performanceMeasurement.length) {
+        return this.performanceMeasurement[0].assessment_id
+      }
+      return null
     }
   },
   filters: {

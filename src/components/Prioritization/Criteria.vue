@@ -48,8 +48,7 @@
           <td class="text-left">{{ item.name }}</td>
           <td class="">{{ item.indicator_type }}</td>
           <td v-for="(score, i) in item.prioritization_score" :key="score.criteria_id" class="score">
-            <!-- <input class="form-control" type="text" v-model="score.score"> -->
-            <select v-model="score.score" class="form-control">
+            <select v-model="score.score" class="form-control" :disabled="!showButton">
               <option v-for="scale in criteria[i].criteriaScales" :value="scale.value" :key="scale.id">{{ scale.value }}</option>
             </select>
           </td>
@@ -61,14 +60,17 @@
       </tbody>
     </table>
     <div
-      v-if="prioritization.length && parseInt(user.id) === org.creator.id">
+      v-if="showButton">
       <div class="col-md-12 form-group text-right">
-        <button class="btn btn-info" @click="save()" v-if="!isSave">Save</button>
+        <button class="btn btn-info" @click="save(true)" v-if="!isSave">Save Draft</button>
       </div>
       <div class="col-md-12 form-group text-center">
-        <button class="btn btn-primary" @click="submit()" v-if="!isSave">Submit</button>
+        <button class="btn btn-primary" @click="save(false)" v-if="!isSave">Submit</button>
         <button class="btn btn-danger">Close</button>
       </div>
+    </div>
+    <div v-if="msg" class="text-center text-success">
+      {{ msg }}
     </div>
   </div>
 </template>
@@ -83,7 +85,8 @@ export default {
   data () {
     return {
       isSave: false,
-      user: JSON.parse(localStorage.getItem('user'))
+      user: JSON.parse(localStorage.getItem('user')),
+      isDraft: true
     }
   },
   created () {
@@ -104,25 +107,28 @@ export default {
     topScore (index) {
       return index === 0 && this.prioritization[index].priority_score > 0 ? 'top-score-text' : ''
     },
-    save () {
+    save (isDraft) {
       this.$store.dispatch('prioritization/savePrioritization', {
-        prioritization: this.prioritization
+        prioritization: this.prioritization,
+        isDraft: isDraft
       })
-      this.isSave = false
-    },
-    submit () {
-      this.$store.dispatch('prioritization/savePrioritization', {
-        prioritization: this.prioritization
-      })
-      this.isSave = false
+        .then(() => {
+          this.isDraft = isDraft
+          this.isSave = false
+        })
     }
   },
   computed: {
     ...mapFields('prioritization', [
       'criteria',
       'count',
-      'prioritization'
-    ])
+      'prioritization',
+      'perf',
+      'msg'
+    ]),
+    showButton () {
+      return this.prioritization.length && parseInt(this.user.id) === this.org.creator.id && !this.perf.length && this.isDraft
+    }
   },
   filters: {
     wordWrap (value) {
