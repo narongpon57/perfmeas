@@ -1,6 +1,9 @@
 <template>
   <div class="col-md-12 text-center">
-    <table class="table table-bg">
+    <div class="text-right form-group">
+      <button class="btn btn-info" @click="exportExcel()">Export Excel</button>
+    </div>
+    <table class="table table-bg" ref="test_table">
       <thead class="table-head">
         <th></th>
         <th>รหัสความเสี่ยง</th>
@@ -145,6 +148,7 @@ import Approval from './Approval.vue'
 import { mapFields } from 'vuex-map-fields'
 import { mapActions } from 'vuex'
 import CONSTANTS from '@/constants/assessment_status'
+import { saveAs } from 'file-saver'
 
 export default {
   props: {
@@ -240,6 +244,25 @@ export default {
       else if (riskScore >= 8 && riskScore <= 12) className = 'high'
       else if (riskScore >= 15 && riskScore <= 25) className = 'extreme'
       return className
+    },
+    exportExcel () {
+      console.log(this.org, this.year)
+      this.$store.dispatch('exportExcel/exportRiskAssessment', {
+        org_id: this.org.id,
+        year: this.year
+      })
+        .then(result => {
+          const date = new Date()
+          saveAs(new Blob([this.s2ab(atob(result))], { type: 'application/octet-stream' }), `Risk_Assessment_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.xlsx`)
+        })
+    },
+    s2ab (s) {
+      let buf = new ArrayBuffer(s.length)
+      let view = new Uint8Array(buf)
+      for (let i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF
+      }
+      return buf
     }
   },
   computed: {

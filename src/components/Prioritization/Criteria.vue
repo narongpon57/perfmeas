@@ -1,5 +1,8 @@
 <template>
   <div class="prioritize-table">
+    <div class="text-right form-group">
+      <button class="btn btn-info" @click="exportExcel()">Export Excel</button>
+    </div>
     <table class="table table-bordered table-bg table-sm text-center">
       <thead class="table-head">
         <th>รหัส</th>
@@ -77,10 +80,12 @@
 
 <script>
 import { mapFields } from 'vuex-map-fields'
+import { saveAs } from 'file-saver'
 
 export default {
   props: {
-    org: Object
+    org: Object,
+    year: String
   },
   data () {
     return {
@@ -116,6 +121,24 @@ export default {
           this.isDraft = isDraft
           this.isSave = false
         })
+    },
+    exportExcel () {
+      this.$store.dispatch('exportExcel/exportPrioritization', {
+        org_id: this.org.id,
+        year: this.year
+      })
+        .then(result => {
+          const date = new Date()
+          saveAs(new Blob([this.s2ab(atob(result))], { type: 'application/octet-stream' }), `Prioritization_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.xlsx`)
+        })
+    },
+    s2ab (s) {
+      let buf = new ArrayBuffer(s.length)
+      let view = new Uint8Array(buf)
+      for (let i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF
+      }
+      return buf
     }
   },
   computed: {

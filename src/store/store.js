@@ -10,6 +10,7 @@ import authentication from './modules/authentication'
 import worklist from './modules/worklist'
 import user from './modules/user'
 import performanceMeasurement from './modules/performance_measurement'
+import exportExcel from './modules/export_excel'
 
 Vue.use(Vuex)
 
@@ -24,7 +25,8 @@ export default new Vuex.Store({
     authentication,
     worklist,
     user,
-    performanceMeasurement
+    performanceMeasurement,
+    exportExcel
   },
   actions: {
     resetAllState ({ commit }) {
