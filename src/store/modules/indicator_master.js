@@ -18,8 +18,11 @@ const mutations = {
   'SET_INDICATORS' (state, indicators) {
     state.indicators = indicators
   },
-  'SET_INDICATOR' (state, indicators) {
-    state.indicators = indicators
+  'SET_INDICATOR' (state, indicator) {
+    state.indicator = indicator
+  },
+  'SET_FORMULAR' (state, formular) {
+    state.indicator.formular = formular
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
@@ -30,24 +33,29 @@ const actions = {
   resetState ({ commit }) {
     commit('RESET_STATE')
   },
-
   saveIndicator ({ commit }, indicators) {
-    axios.post('/indicators', indicators)
+    axios.post('/indicator', indicators)
       .then(res => {
         commit('RESET_STATE')
       })
       .catch(err => console.log(err))
   },
   searchIndicator ({ commit }, payload) {
-    axios.get('/indicator', { params: { ...payload.indicator } })
-      .then(res => res.data.result)
-      .then(indicators => {
-        const indicatorFilter = indicators.filter(obj => {
-          return !payload.indicatorIds.includes(obj.id)
+    return new Promise((resolve, reject) => {
+      axios.get('/indicator', { params: { ...payload.indicator } })
+        .then(res => res.data.result)
+        .then(indicators => {
+          let indicatorFilter = indicators
+          if (payload.indicatorIds !== null) {
+            indicatorFilter = indicators.filter(obj => {
+              return !payload.indicatorIds.includes(obj.id)
+            })
+          }
+          commit('SET_INDICATORS', indicatorFilter)
+          resolve()
         })
-        commit('SET_INDICATORS', indicatorFilter)
-      })
-      .catch(err => console.log(err))
+        .catch(err => console.log(err))
+    })
   },
   getIndicators ({ commit }) {
     axios.get('/indicators')
@@ -59,16 +67,16 @@ const actions = {
   },
 
   getIndicatorById ({ commit }, riskId) {
-    axios.get(`/indicators/${riskId}`)
+    axios.get(`/indicator/${riskId}`)
       .then(res => res.data.data)
-      .then(indicators => {
-        commit('SET_INDICATOR', indicators)
+      .then(indicator => {
+        commit('SET_INDICATOR', indicator)
       })
       .catch(err => console.log(err))
   },
 
   updateIndicator ({ commit }, indicators) {
-    axios.put('/indicators', indicators)
+    axios.put('/indicator', indicators)
       .then(res => {
         commit('RESET_STATE')
       })

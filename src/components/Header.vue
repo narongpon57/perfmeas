@@ -22,10 +22,10 @@
               <!-- <router-link to="/category" tag="li"><a>Category Management</a></router-link> -->
               <router-link to="/risk" tag="li"><a>Risk Management</a></router-link>
               <!-- <router-link to="/risk_type" tag="li"><a>Risk Type</a></router-link> -->
-              <router-link to="/indicator_management" tag="li"><a>Indicator Management</a></router-link>
+              <router-link to="/indicator" tag="li"><a>Indicator Management</a></router-link>
               <router-link to="/period_management" tag="li"><a>Period Management</a></router-link>
               <!-- <router-link to="/prioritization_criteria" tag="li"><a>Prioritization Criteria</a></router-link> -->
-              <router-link to="/approve_list" tag="li"><a>ApproveList</a></router-link>
+              <!-- <router-link to="/approve_list" tag="li"><a>ApproveList</a></router-link> -->
             </div>
           </li>
         </ul>

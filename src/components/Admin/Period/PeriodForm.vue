@@ -11,11 +11,8 @@
                   Period Type:
                 </div>
                 <div class="col-md-8">
-                  <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                    <option value="0">Please Select</option>
-                    <option>Performance Measurement</option>
-                    <option>Risk Management</option>
-                    <option>Prioritization</option>
+                  <select class="form-control " v-model="period.type">
+                    <option v-for="i in type" :key="i" :value="i">{{ i }}</option>
                   </select>
                 </div>
               </div>
@@ -24,22 +21,8 @@
                   Period Year:
                 </div>
                 <div class="col-md-8">
-                  <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                    <option value="0">Please Select</option>
-                    <option>2018</option>
-                    <option>2019</option>
-                    <option>2020</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row form-group">
-                <div class="col-md-4 text-right label-text">
-                  Period Month:
-                </div>
-                <div class="col-md-8">
-                  <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                    <option value="0">Please Select</option>
-                    <option v-for="i in 12" :key="i" :value="i">{{ i }}</option>
+                  <select class="form-control " v-model="period.year">
+                    <option v-for="y in year" :key="y" :value="y">{{ y }}</option>
                   </select>
                 </div>
               </div>
@@ -48,7 +31,7 @@
                   Period Name:
                 </div>
                 <div class="col-md-8">
-                  <input type="text" class="form-control form-control-sm">
+                  <input type="text" class="form-control " v-model="period.name">
                 </div>
               </div>
               <div class="row form-group">
@@ -57,10 +40,9 @@
                 </div>
                 <div class="col-md-8">
                   <datepicker
-                    :value="dateFrom"
+                    v-model="period.date_from"
                     :format="'dd/MM/yyyy'"
-                    :calendar-button="true"
-                    :calendar-button-icon="'fa fa-calendar'"
+                    :input-class="'form-control'"
                     ></datepicker>
                 </div>
               </div>
@@ -70,10 +52,21 @@
                 </div>
                 <div class="col-md-8">
                   <datepicker
-                    :value="dateTo"
+                    v-model="period.date_to"
                     :format="'dd/MM/yyyy'"
-                    :calendar-button="true"
-                    :calendar-button-icon="'fa fa-calendar'"
+                    :input-class="'form-control'"
+                    ></datepicker>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-4 text-right label-text">
+                  Published Date:
+                </div>
+                <div class="col-md-8">
+                  <datepicker
+                    v-model="period.published_date"
+                    :format="'dd/MM/yyyy'"
+                    :input-class="'form-control'"
                     ></datepicker>
                 </div>
               </div>
@@ -82,17 +75,14 @@
                   Status:
                 </div>
                 <div class="col-md-8">
-                  <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                    <option value="0">Please Select</option>
-                    <option>Draft</option>
-                    <option>Published</option>
-                    <option>Inactive</option>
+                  <select class="form-control " v-model="period.status">
+                    <option v-for="s in status" :key="s" :value="s">{{ s }}</option>
                   </select>
                 </div>
               </div>
               <div class="row form-group ">
                 <div class="col-md-12 text-center">
-                  <button class="btn btn-primary">Save</button>
+                  <button class="btn btn-primary" @click="save">Save</button>
                   <button class="btn btn-danger" @click="$router.go(-1)">Close</button>
                 </div>
               </div>
@@ -105,7 +95,8 @@
 </template>
 
 <script>
-
+import { mapFields } from 'vuex-map-fields'
+import { mapActions } from 'vuex'
 import Datepicker from 'vuejs-datepicker'
 
 export default {
@@ -114,12 +105,37 @@ export default {
   },
   data () {
     return {
-      isActive: '',
-      orgCode: ['BHQ', 'GLS001', 'GLS002', 'GLS003'],
-      orgCodeSelected: '',
-      dateFrom: new Date(),
-      dateTo: new Date()
+      status: ['Draft', 'Published', 'Inactive'],
+      type: ['Performance Measurement', 'Risk Assessment', 'Prioritization'],
+      year: ['2018', '2019', '2020']
     }
+  },
+  created () {
+    if (this.$route.params.id !== undefined) {
+      this.$store.dispatch('period/getPeriodById', this.$route.params.id)
+    }
+  },
+  methods: {
+    ...mapActions('period', [
+      'savePeriod',
+      'updatePeriod'
+    ]),
+    save () {
+      console.log(this.period)
+      let periodData = {}
+      if (this.period.id === undefined) {
+        this.savePeriod(Object.assign(periodData, this.period))
+      } else {
+        this.updatePeriod(Object.assign(periodData, this.period))
+      }
+    },
+    back () {
+      this.$router.go(-1)
+    },
+    setFormular () {}
+  },
+  computed: {
+    ...mapFields('period', ['period'])
   }
 }
 </script>

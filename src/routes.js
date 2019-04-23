@@ -18,6 +18,9 @@ import CategoryForm from './components/Admin/Category/CategoryForm.vue'
 import Risk from './components/Admin/Risk/Risk.vue'
 import RiskForm from './components/Admin/Risk/RiskForm.vue'
 
+import Indicator from './components/Admin/Indicator/Indicator.vue'
+import IndicatorForm from './components/Admin/Indicator/IndicatorForm.vue'
+
 import RiskType from './components/Admin/RiskType/RiskType.vue'
 import RiskTypeForm from './components/Admin/RiskType/RiskTypeForm.vue'
 
@@ -63,13 +66,15 @@ export const routes = [
       { path: 'risk_type_form', component: RiskTypeForm },
       { path: 'risk', component: Risk },
       { path: 'risk_form/:id?', component: RiskForm },
+      { path: 'indicator', component: Indicator },
+      { path: 'indicator_form/:id?', component: IndicatorForm },
       { path: 'prioritization_criteria', component: Criteria },
       { path: 'prioritization_criteria_form', component: CriteriaForm },
       { path: 'user_management', component: User },
       { path: 'user_management_form/:id?', component: UserForm },
       { path: 'approve_list', component: Approve },
       { path: 'period_management', component: Period },
-      { path: 'period_management_form', component: PeriodForm },
+      { path: 'period_management_form/:id?', component: PeriodForm },
       { path: 'organization_management', component: Organization },
       { path: 'organization_management_form/:id?', component: OrganizationForm }
     ]

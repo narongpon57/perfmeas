@@ -9,61 +9,117 @@
         <div class="container">
           <div class="row form-group">
             <div class="col-md-6">
-              <label for="" class="font-normal">Period Type: </label>
-              <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                <option>Performance Measurement</option>
-                <option>Risk Assessment</option>
-                <option>Prioritize</option>
-              </select>
+              <label for="" class="font-normal">Name: </label>
+              <input type="text" v-model="period.name" class="form-control">
             </div>
             <div class="col-md-6">
-              <label for="" class="font-normal">Period Year: </label>
-              <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                <option>2018</option>
-                <option>2019</option>
-                <option>2020</option>
-              </select>
+              <label for="" class="font-normal">Status: </label>
+                <select class="form-control " v-model="period.status">
+                  <option v-for="s in status" :key="s" :value="s">{{ s }}</option>
+                </select>
             </div>
           </div>
           <div class="row form-group">
             <div class="col-md-6">
-              <label for="" class="font-normal">Period Name: </label>
-              <input type="text" class="form-control form-control-sm">
+              <label for="" class="font-normal">Type: </label>
+              <select class="form-control " v-model="period.type">
+                <option v-for="i in type" :key="i" :value="i">{{ i }}</option>
+              </select>
             </div>
             <div class="col-md-6">
-              <label for="" class="font-normal">Status: </label>
-              <select class="form-control form-control-sm" id="exampleFormControlSelect1">
-                <option>Draft</option>
-                <option>Published</option>
-                <option>Inactive</option>
+              <label for="" class="font-normal">Year: </label>
+              <select class="form-control " v-model="period.year">
+                <option v-for="y in year" :key="y" :value="y">{{ y }}</option>
               </select>
             </div>
           </div>
           <div class="row form-group">
             <div class="col-md-6 text-right">
-              <button class="btn btn-info">Search</button>
+              <button class="btn btn-info" @click="search">Search</button>
             </div>
             <div class="col-md-6">
               <button class="btn btn-danger">Clear</button>
             </div>
           </div>
         </div>
+        <table class="table table-bg" v-show="isSearch">
+          <thead class="table-head">
+            <th>Period Type</th>
+            <th>Period Name</th>
+            <th>Period Year</th>
+            <th>Date From</th>
+            <th>Date To</th>
+            <th>Published Date</th>
+            <th>Status</th>
+          </thead>
+          <tbody>
+            <router-link v-for="period in periods" :key="period.id" :to="{path: `/period_management_form/${period.id}`}" tag="tr">
+              <td>{{ period.type }}</td>
+              <td>{{ period.name }}</td>
+              <td>{{ period.year }}</td>
+              <td>{{ period.date_from_string }}</td>
+              <td>{{ period.date_to_string }}</td>
+              <td>{{ period.published_date_string }}</td>
+              <td>{{ period.status }}</td>
+            </router-link>
+            <tr v-show="!periods.length">
+              <td class="text-center" colspan="7">No Data</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
+import { mapFields } from 'vuex-map-fields'
+
 export default {
   data () {
     return {
-      orgCode: ['BHQ', 'GLS001', 'GLS002', 'GLS003'],
-      orgCodeSelected: ''
+      isSearch: false,
+      status: ['Draft', 'Published', 'Inactive'],
+      type: ['Performance Measurement', 'Risk Assessment', 'Prioritization'],
+      year: ['2018', '2019', '2020'],
+      period: {
+        type: '',
+        name: '',
+        status: '',
+        year: ''
+      }
     }
+  },
+  methods: {
+    search () {
+      const payload = {
+        period: this.period
+      }
+      this.$store.dispatch('period/searchPeriod', payload)
+        .then(() => {
+          this.isSearch = true
+        })
+    }
+  },
+  computed: {
+    ...mapFields('period', ['periods'])
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+table {
+  font-size: 0.85rem;
+  tr {
+    cursor: pointer;
+  }
+  .desc {
+    width: 55%;
+  }
+  .risk-type,
+  .risk-group {
+    width: 8%;
+  }
+}
 </style>

@@ -3,8 +3,8 @@ import { getField, updateField } from 'vuex-map-fields'
 
 const initialState = () => {
   return {
-    risks: [],
-    risk: []
+    periods: [],
+    period: []
   }
 }
 
@@ -12,14 +12,14 @@ const state = initialState()
 
 const mutations = {
   updateField,
-  'ADD_RISK' (state, risk) {
-    state.risks.push(risk)
+  'ADD_INDICATOR' (state, periods) {
+    state.periods.push(periods)
   },
-  'SET_RISKS' (state, risks) {
-    state.risks = risks
+  'SET_INDICATORS' (state, periods) {
+    state.periods = periods
   },
-  'SET_RISK' (state, risk) {
-    state.risk = risk
+  'SET_INDICATOR' (state, period) {
+    state.period = period
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
@@ -30,51 +30,44 @@ const actions = {
   resetState ({ commit }) {
     commit('RESET_STATE')
   },
-
-  saveRisk ({ commit }, risk) {
-    axios.post('/risk', risk)
+  savePeriod ({ commit }, periods) {
+    axios.post('/period', periods)
       .then(res => {
         commit('RESET_STATE')
       })
       .catch(err => console.log(err))
   },
-  searchRisk ({ commit }, payload) {
+  searchPeriod ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      axios.get('/risk', { params: { ...payload.risk } })
+      axios.get('/period', { params: { ...payload.period } })
         .then(res => res.data.result)
-        .then(risks => {
-          let risksFilter = risks
-          if (payload.riskIds !== null) {
-            risksFilter = risks.filter(obj => {
-              return !payload.riskIds.includes(obj.id)
-            })
-          }
-          commit('SET_RISKS', risksFilter)
+        .then(periods => {
+          commit('SET_INDICATORS', periods)
           resolve()
         })
         .catch(err => console.log(err))
     })
   },
-  getRisks ({ commit }) {
-    axios.get('/risks')
+  getPeriods ({ commit }) {
+    axios.get('/periods')
       .then(res => res.data.result)
-      .then(risks => {
-        commit('SET_RISKS', risks)
+      .then(periods => {
+        commit('SET_INDICATORS', periods)
       })
       .catch(err => console.log(err))
   },
 
-  getRiskById ({ commit }, riskId) {
-    axios.get(`/risk/${riskId}`)
+  getPeriodById ({ commit }, riskId) {
+    axios.get(`/period/${riskId}`)
       .then(res => res.data.data)
-      .then(risk => {
-        commit('SET_RISK', risk)
+      .then(period => {
+        commit('SET_INDICATOR', period)
       })
       .catch(err => console.log(err))
   },
 
-  updateRisk ({ commit }, risk) {
-    axios.put('/risk', risk)
+  updatePeriod ({ commit }, periods) {
+    axios.put('/period', periods)
       .then(res => {
         commit('RESET_STATE')
       })
