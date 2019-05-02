@@ -4,7 +4,9 @@ import { getField, updateField } from 'vuex-map-fields'
 const initialState = () => {
   return {
     risks: [],
-    risk: []
+    risk: {
+      existing_risk: []
+    }
   }
 }
 
@@ -23,6 +25,17 @@ const mutations = {
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
+  },
+  'ADD_EXISTING_MEASURE' (state, payload) {
+    for (let indicator of payload.indicators) {
+      state.risk.existing_risk.push({
+        id: null,
+        indicator: indicator
+      })
+    }
+  },
+  'REMOVE_EXISTING_MEASURE' (state, index) {
+    state.risk.existing_risk.splice(index, 1)
   }
 }
 
@@ -66,8 +79,9 @@ const actions = {
 
   getRiskById ({ commit }, riskId) {
     axios.get(`/risk/${riskId}`)
-      .then(res => res.data.data)
+      .then(res => res.data.result)
       .then(risk => {
+        console.log(risk)
         commit('SET_RISK', risk)
       })
       .catch(err => console.log(err))

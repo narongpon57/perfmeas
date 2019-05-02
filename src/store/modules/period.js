@@ -4,7 +4,8 @@ import { getField, updateField } from 'vuex-map-fields'
 const initialState = () => {
   return {
     periods: [],
-    period: []
+    period: [],
+    onPeriod: true
   }
 }
 
@@ -12,13 +13,16 @@ const state = initialState()
 
 const mutations = {
   updateField,
-  'ADD_INDICATOR' (state, periods) {
+  'ADD_PERIOD' (state, periods) {
     state.periods.push(periods)
   },
-  'SET_INDICATORS' (state, periods) {
+  'SET_PERIODS' (state, periods) {
     state.periods = periods
   },
-  'SET_INDICATOR' (state, period) {
+  'SET_ON_PERIOD' (state, onPeriod) {
+    state.onPeriod = onPeriod
+  },
+  'SET_PERIOD' (state, period) {
     state.period = period
   },
   'RESET_STATE' (state) {
@@ -42,7 +46,7 @@ const actions = {
       axios.get('/period', { params: { ...payload.period } })
         .then(res => res.data.result)
         .then(periods => {
-          commit('SET_INDICATORS', periods)
+          commit('SET_PERIODS', periods)
           resolve()
         })
         .catch(err => console.log(err))
@@ -52,26 +56,35 @@ const actions = {
     axios.get('/periods')
       .then(res => res.data.result)
       .then(periods => {
-        commit('SET_INDICATORS', periods)
+        commit('SET_PERIODS', periods)
       })
       .catch(err => console.log(err))
   },
-
   getPeriodById ({ commit }, riskId) {
     axios.get(`/period/${riskId}`)
       .then(res => res.data.data)
       .then(period => {
-        commit('SET_INDICATOR', period)
+        commit('SET_PERIOD', period)
       })
       .catch(err => console.log(err))
   },
-
   updatePeriod ({ commit }, periods) {
     axios.put('/period', periods)
       .then(res => {
         commit('RESET_STATE')
       })
       .catch(err => console.log(err))
+  },
+  getPeriodCompare ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      axios.get('/on_period', { params: payload })
+        .then(res => res.data.result)
+        .then(period => {
+          commit('SET_ON_PERIOD', period.length)
+          resolve()
+        })
+        .catch(err => console.log(err))
+    })
   }
 }
 

@@ -116,7 +116,9 @@ export default {
         name: '',
         indicator_type: '',
         standard: '',
-        measurement_domain: ''
+        measurement_domain: '',
+        code: '',
+        frequency: ''
       },
       isSearch: false,
       selectedIndicator: []
@@ -131,7 +133,9 @@ export default {
         name: '',
         indicator_type: '',
         standard: '',
-        measurement_domain: ''
+        measurement_domain: '',
+        code: '',
+        frequency: ''
       }
       this.$store.commit('indicatorMaster/RESET_STATE')
       this.$emit('close')

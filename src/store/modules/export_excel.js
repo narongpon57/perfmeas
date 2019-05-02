@@ -15,7 +15,6 @@ const mutations = {
 
 const actions = {
   exportRiskAssessment ({ commit }, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.get('/risk_assessment_export', { params: payload })
         .then(res => {
@@ -28,9 +27,20 @@ const actions = {
     })
   },
   exportPrioritization ({ commit }, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       axios.get('/prioritization_export', { params: payload })
+        .then(res => {
+          resolve(res.data.result)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
+  },
+  exportPerfMeas ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      axios.get('/performance_measurement_export', { params: payload })
         .then(res => {
           resolve(res.data.result)
         })

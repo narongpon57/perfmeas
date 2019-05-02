@@ -43,6 +43,8 @@
             <th>Problem Area or Activity</th>
             <th>Indentified</th>
             <th class="desc">Description</th>
+            <th >Existing Measures</th>
+            <!-- <th >Status</th> -->
           </thead>
           <tbody>
             <router-link v-for="risk in risks" :key="risk.id" :to="{path: `/risk_form/${risk.id}`}" tag="tr">
@@ -51,9 +53,11 @@
               <td>{{ risk.problem_area }}</td>
               <td>{{ risk.identified }}</td>
               <td>{{ risk.description }}</td>
+              <td><div v-for="existing in risk.existing_risk" :key="existing.id">- {{ existing.indicator.name }}</div></td>
+              <!-- <td :class="{'text-success': parseInt(risk.is_active) === 1, 'text-danger': parseInt(risk.is_active) === 0}">{{ parseInt(risk.is_active) === 1 ? 'Active' : 'Inactive' }}</td> -->
             </router-link>
             <tr v-show="!risks.length">
-              <td class="text-center" colspan="5">No Data</td>
+              <td class="text-center" colspan="6">No Data</td>
             </tr>
           </tbody>
         </table>
@@ -115,7 +119,7 @@ export default {
       cursor: pointer;
     }
     .desc {
-      width: 55%;
+      width: 40%;
     }
     .risk-type,
     .risk-group {

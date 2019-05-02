@@ -95,6 +95,12 @@ export default {
     }
   },
   created () {
+    const payload = {}
+    this.$store.dispatch('period/getPeriodCompare', { 
+        type: 'Prioritization',
+        year: new Date().getFullYear()
+      })
+      .then(() => console.log(this.onPeriod))
   },
   methods: {
     priorityScore (index) {
@@ -149,8 +155,11 @@ export default {
       'perf',
       'msg'
     ]),
+    ...mapFields('period', [
+      'onPeriod'
+    ]),
     showButton () {
-      return this.prioritization.length && parseInt(this.user.id) === this.org.creator.id && !this.perf.length && this.isDraft
+      return this.prioritization.length && parseInt(this.user.id) === this.org.creator.id && !this.perf.length && this.isDraft && this.onPeriod
     }
   },
   filters: {

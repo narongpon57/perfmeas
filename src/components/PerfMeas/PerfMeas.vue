@@ -1,5 +1,8 @@
 <template>
   <div class="perfmeas-table">
+    <div class="text-right form-group">
+      <button class="btn btn-info" @click="exportExcel()">Export Excel</button>
+    </div>
     <table class="table table-bordered table-bg table-sm text-center">
       <thead class="table-head">
         <th></th>
@@ -38,34 +41,34 @@
             <td rowspan="2">{{ item.formular }}</td>
             <td rowspan="2">{{ item.operator }}</td>
             <td rowspan="2">{{ item.target }}</td>
-            <td><input type="text" v-model="item.jan_multiplier_value"></td>
-            <td><input type="text" v-model="item.feb_multiplier_value"></td>
-            <td><input type="text" v-model="item.mar_multiplier_value"></td>
-            <td><input type="text" v-model="item.apr_multiplier_value"></td>
-            <td><input type="text" v-model="item.may_multiplier_value"></td>
-            <td><input type="text" v-model="item.jun_multiplier_value"></td>
-            <td><input type="text" v-model="item.jul_multiplier_value"></td>
-            <td><input type="text" v-model="item.aug_multiplier_value"></td>
-            <td><input type="text" v-model="item.sep_multiplier_value"></td>
-            <td><input type="text" v-model="item.oct_multiplier_value"></td>
-            <td><input type="text" v-model="item.nov_multiplier_value"></td>
-            <td><input type="text" v-model="item.dec_multiplier_value"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jan_multiplier_value" :disabled="disabledForm(item.frequency, 1)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.feb_multiplier_value" :disabled="disabledForm(item.frequency, 2)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.mar_multiplier_value" :disabled="disabledForm(item.frequency, 3)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.apr_multiplier_value" :disabled="disabledForm(item.frequency, 4)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.may_multiplier_value" :disabled="disabledForm(item.frequency, 5)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jun_multiplier_value" :disabled="disabledForm(item.frequency, 6)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jul_multiplier_value" :disabled="disabledForm(item.frequency, 7)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.aug_multiplier_value" :disabled="disabledForm(item.frequency, 8)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.sep_multiplier_value" :disabled="disabledForm(item.frequency, 9)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.oct_multiplier_value" :disabled="disabledForm(item.frequency, 10)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.nov_multiplier_value" :disabled="disabledForm(item.frequency, 11)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.dec_multiplier_value" :disabled="disabledForm(item.frequency, 12)"></td>
             <td>{{ ytdMultiplier(item) }}</td>
           </tr>
           <tr :key="item.risk_assessment_indicator_id">
             <td>{{ item.divisor }}</td>
-            <td><input type="text" v-model="item.jan_divisor_value"></td>
-            <td><input type="text" v-model="item.feb_divisor_value"></td>
-            <td><input type="text" v-model="item.mar_divisor_value"></td>
-            <td><input type="text" v-model="item.apr_divisor_value"></td>
-            <td><input type="text" v-model="item.may_divisor_value"></td>
-            <td><input type="text" v-model="item.jun_divisor_value"></td>
-            <td><input type="text" v-model="item.jul_divisor_value"></td>
-            <td><input type="text" v-model="item.aug_divisor_value"></td>
-            <td><input type="text" v-model="item.sep_divisor_value"></td>
-            <td><input type="text" v-model="item.oct_divisor_value"></td>
-            <td><input type="text" v-model="item.nov_divisor_value"></td>
-            <td><input type="text" v-model="item.dec_divisor_value"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jan_divisor_value" :disabled="disabledForm(item.frequency, 1)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.feb_divisor_value" :disabled="disabledForm(item.frequency, 2)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.mar_divisor_value" :disabled="disabledForm(item.frequency, 3)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.apr_divisor_value" :disabled="disabledForm(item.frequency, 4)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.may_divisor_value" :disabled="disabledForm(item.frequency, 5)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jun_divisor_value" :disabled="disabledForm(item.frequency, 6)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.jul_divisor_value" :disabled="disabledForm(item.frequency, 7)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.aug_divisor_value" :disabled="disabledForm(item.frequency, 8)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.sep_divisor_value" :disabled="disabledForm(item.frequency, 9)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.oct_divisor_value" :disabled="disabledForm(item.frequency, 10)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.nov_divisor_value" :disabled="disabledForm(item.frequency, 11)"></td>
+            <td><input type="text" class="form-control input-perf" v-model="item.dec_divisor_value" :disabled="disabledForm(item.frequency, 12)"></td>
             <td>{{ ydtDivisor(item) }}</td>
           </tr>
           <tr :key="item.code" style="background-color: antiquewhite;">
@@ -90,7 +93,7 @@
         </tr>
       </tbody>
     </table>
-     <div v-if="performanceMeasurement.length">
+     <div v-if="performanceMeasurement.length && !disabledForm">
       <div class="col-md-12 form-group">
         <button class="btn btn-info" @click="showModal">Add Indicator</button>
       </div>
@@ -112,18 +115,28 @@
 import { mapFields } from 'vuex-map-fields'
 import { mapActions } from 'vuex'
 import IndicatorPerformanceModal from '../IndicatorPerformanceModal.vue'
+import { saveAs } from 'file-saver'
 
 export default {
   props: {
-    org: Object
+    org: Object,
+    year: String
   },
   components: {
     appIndPerfModal: IndicatorPerformanceModal
   },
   data () {
     return {
-      isModalVisible: false
+      isModalVisible: false,
+      user: JSON.parse(localStorage.getItem('user'))
     }
+  },
+  created () {
+    this.$store.dispatch('period/getPeriodCompare', {
+      type: 'Performance Measurement',
+      year: new Date().getFullYear()
+    })
+      .then(() => console.log(this.onPeriod))
   },
   methods: {
     ...mapActions('performanceMeasurement', [
@@ -228,11 +241,41 @@ export default {
         activeClass = onTarget ? 'target' : 'no-target'
       }
       return activeClass
+    },
+    exportExcel () {
+      this.$store.dispatch('exportExcel/exportPerfMeas', {
+        org_id: this.org.id,
+        year: this.year
+      })
+        .then(result => {
+          const date = new Date()
+          saveAs(new Blob([this.s2ab(atob(result))], { type: 'application/octet-stream' }), `PerformanceMeasurement_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.xlsx`)
+        })
+    },
+    s2ab (s) {
+      let buf = new ArrayBuffer(s.length)
+      let view = new Uint8Array(buf)
+      for (let i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF
+      }
+      return buf
+    },
+    disabledForm (frequency, month) {
+      let mod
+      if (frequency === 'Yearly') mod = 12
+      else if (frequency === 'Half-yearly') mod = 6
+      else if (frequency === 'Quarterly') mod = 3
+      else if (frequency === 'Monthly') mod = 1
+
+      return !parseInt(this.user.id) === this.org.creator.id || !this.onPeriod || month % mod !== 0
     }
   },
   computed: {
     ...mapFields('performanceMeasurement', [
       'performanceMeasurement'
+    ]),
+    ...mapFields('period', [
+      'onPeriod'
     ]),
     getRiskIndicatorId () {
       return this.performanceMeasurement.map(obj => {
@@ -284,5 +327,9 @@ export default {
 }
 .btn-primary {
   margin: 0 10px;
+}
+.input-perf {
+  padding: .1rem;
+  font-size: 12px;
 }
 </style>

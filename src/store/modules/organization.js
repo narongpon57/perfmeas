@@ -37,6 +37,7 @@ const mutations = {
     state.orgUnits = []
   },
   'SET_ORGS_MASTER' (state, orgUnits) {
+    console.log(orgUnits)
     state.orgs = orgUnits
   },
   'SET_ORG_MASTER' (state, org) {

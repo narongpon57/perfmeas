@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import vSelect from 'vue-select'
 import Datatable from 'vue2-datatable-component'
+import Notification from 'vue-notification'
 import { ClientTable } from 'vue-tables-2'
 import axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -26,6 +27,7 @@ axios.defaults.baseURL = 'http://localhost:3000/api'
 Vue.use(VueRouter)
 Vue.use(Datatable)
 Vue.use(ClientTable)
+Vue.use(Notification)
 
 library.add(faPlus, faTimes, faPlusCircle, faUser, faSignOutAlt)
 Vue.component('font-awesome-icon', FontAwesomeIcon)

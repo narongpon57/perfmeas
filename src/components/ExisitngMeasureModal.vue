@@ -7,7 +7,7 @@
         aria-describedby="modal1Description">
         <header class="modal1-header" id="modal1Title">
           <slot name="header">
-            Risk Indicator
+            Indicator Management
             <button
               type="button"
               class="btn-close"
@@ -24,7 +24,35 @@
         >
           <slot name="body">
             <div class="container">
-              <div class="row">
+              <div class="row form-group text-left">
+                <div class="col-md-6">
+                  <label for="" class="font-normal">Indicator Name: </label>
+                  <input type="text" class="form-control" v-model="indicator.name" />
+                </div>
+                <div class="col-md-6">
+                  <label for="" class="font-normal">Indicator Type: </label>
+                  <v-select v-model="indicator.indicator_type" :options="indicator_type"></v-select>
+                </div>
+              </div>
+              <div class="row form-group text-left">
+                <div class="col-md-6">
+                  <label for="" class="font-normal">Standard: </label>
+                  <v-select v-model="indicator.standard" :options="standard"></v-select>
+                </div>
+                <div class="col-md-6">
+                  <label for="" class="font-normal">Measurement Domain: </label>
+                  <v-select v-model="indicator.measurement_domain" :options="measurement_domain"></v-select>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-6 text-right">
+                  <button class="btn btn-info" @click="search">Search</button>
+                </div>
+                <div class="col-md-6 text-left">
+                  <button class="btn btn-danger" @click="clear">Clear</button>
+                </div>
+              </div>
+              <div class="row" v-show="isSearch">
                 <table class="table table-bg">
                   <thead class="table-head">
                     <th></th>
@@ -36,7 +64,7 @@
                     <th>เครื่องหมาย</th>
                   </thead>
                   <tbody class="text-left">
-                    <tr v-for="indicator in performanceIndicators" :key="indicator.id">
+                    <tr v-for="indicator in indicators" :key="indicator.id">
                       <td>
                         <input
                           type="checkbox"
@@ -50,7 +78,7 @@
                       <td>{{ indicator.formular }}</td>
                       <td>{{ indicator.operator }}</td>
                     </tr>
-                    <tr v-if="!performanceIndicators.length" class="text-center">
+                    <tr v-if="!indicators.length" class="text-center">
                       <td colspan="7">No Data</td>
                     </tr>
                   </tbody>
@@ -63,7 +91,7 @@
           <slot name="footer">
             <button class="btn btn-info"
               @click="selected()"
-              v-if="selectedIndicator.length">Select</button>
+              v-if="indicators.length">Select</button>
           </slot>
         </footer>
       </div>
@@ -71,12 +99,13 @@
   </transition>
 </template>
 <script>
+import { mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
   props: {
-    assessmentId: Number,
-    riskIndicatorId: Array
+    riskIndex: Number,
+    indicatorId: Array
   },
   data () {
     return {
@@ -96,18 +125,55 @@ export default {
     }
   },
   methods: {
+    ...mapActions('indicatorMaster', ['searchIndicator']),
+    ...mapActions('riskAssessment', ['addRiskIndicator']),
     close () {
+      this.isSearch = false
+      this.indicator = {
+        name: '',
+        indicator_type: '',
+        standard: '',
+        measurement_domain: '',
+        code: '',
+        frequency: ''
+      }
+      this.$store.commit('indicatorMaster/RESET_STATE')
       this.$emit('close')
     },
+    search () {
+      const payload = {
+        indicator: this.indicator,
+        indicatorIds: this.indicatorId
+      }
+      this.searchIndicator(payload)
+        .then(() => {
+          this.isSearch = true
+        })
+    },
+    clear () {
+      this.isSearch = false
+      this.indicator = {
+        name: '',
+        indicator_type: '',
+        standard: '',
+        measurement_domain: ''
+      }
+      this.$store.commit('indicatorMaster/RESET_STATE')
+    },
     selected () {
-      this.$store.commit('performanceMeasurement/ADD_PERFORMANCE_MEASUREMENT', this.selectedIndicator)
+      const payload = {
+        indicators: this.selectedIndicator
+      }
+      this.$store.commit('riskMaster/ADD_EXISTING_MEASURE', payload)
       this.selectedIndicator = []
+      this.isSearch = false
+      this.$store.commit('indicatorMaster/RESET_STATE')
       this.$emit('close')
     }
   },
   computed: {
-    ...mapFields('performanceMeasurement', [
-      'performanceIndicators'
+    ...mapFields('indicatorMaster', [
+      'indicators'
     ])
   }
 }

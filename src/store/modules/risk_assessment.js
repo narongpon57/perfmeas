@@ -35,10 +35,11 @@ const mutations = {
         impact: null,
         risk_score: null,
         mitigation_strategy: null,
-        risk_indicator: [],
+        risk_indicator: risk.existing_risk,
         risk: risk
       })
     }
+    console.log(state.assessment)
   },
   'REMOVE_RISK_ASSESSMENT' (state, index) {
     state.assessment.risk_assessment.splice(index, 1)
