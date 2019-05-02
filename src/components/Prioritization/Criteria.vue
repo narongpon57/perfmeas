@@ -95,12 +95,10 @@ export default {
     }
   },
   created () {
-    const payload = {}
-    this.$store.dispatch('period/getPeriodCompare', { 
-        type: 'Prioritization',
-        year: new Date().getFullYear()
-      })
-      .then(() => console.log(this.onPeriod))
+    this.$store.dispatch('period/getPeriodCompare', {
+      type: 'Prioritization',
+      year: new Date().getFullYear()
+    })
   },
   methods: {
     priorityScore (index) {

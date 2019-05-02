@@ -136,7 +136,6 @@ export default {
       type: 'Performance Measurement',
       year: new Date().getFullYear()
     })
-      .then(() => console.log(this.onPeriod))
   },
   methods: {
     ...mapActions('performanceMeasurement', [
