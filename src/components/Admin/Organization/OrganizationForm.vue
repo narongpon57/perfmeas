@@ -37,6 +37,7 @@
                 <div class="col-md-8">
                    <v-select
                       v-model="org.creator"
+                      label="label"
                       :options="users"></v-select>
                 </div>
               </div>
@@ -68,7 +69,6 @@
 import { mapFields } from 'vuex-map-fields'
 
 export default {
-  
   created () {
     if (this.$route.params.id !== undefined) {
       this.$store.dispatch('organization/searchOrgById', this.$route.params.id)
@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     save () {
-      console.log(this.org)
+      this.$store.dispatch('organization/saveOrg', this.org)
     }
   },
   computed: {

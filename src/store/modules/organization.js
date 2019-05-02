@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getField, updateField } from 'vuex-map-fields'
+import Vue from 'vue'
 
 const initialState = () => {
   return {
@@ -42,6 +43,7 @@ const mutations = {
   },
   'SET_ORG_MASTER' (state, org) {
     state.org = {
+      id: org.id,
       type: org.type,
       code: org.code,
       name: org.name,
@@ -49,6 +51,12 @@ const mutations = {
       step1_approver: org.step1_approver,
       label: org.label
     }
+
+    let labelCreator = `${org.creator.employee_code} - ${org.creator.first_name} ${org.creator.last_name}`
+    Vue.set(state.org.creator, 'label', labelCreator)
+
+    let labelApprover = `${org.step1_approver.employee_code} - ${org.step1_approver.first_name} ${org.step1_approver.last_name}`
+    Vue.set(state.org.step1_approver, 'label', labelApprover)
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
@@ -75,6 +83,15 @@ const actions = {
       .then(res => res.data.result)
       .then(org => {
         commit('SET_ORG_MASTER', org)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
+  saveOrg ({ commit }, org) {
+    axios.put('/organization_unit', org)
+      .then(res => {
+        console.log(res)
       })
       .catch(err => {
         console.log(err)
