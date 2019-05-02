@@ -27,9 +27,10 @@ const mutations = {
   'SET_ORGANIZATION_UNIT' (state, orgUnits) {
     state.orgUnits = orgUnits
   },
-  'SET_SEARCH_LOCAL_ORG' (state, payload) {
+  'SET_ORG_SELECTED' (state, payload) {
     state.orgSelected = payload.org
     state.yearSelected = payload.year
+    state.typeSelected = payload.type
   },
   'RESET_ORG' (state) {
     state.yearSelected = null
@@ -37,7 +38,6 @@ const mutations = {
     state.orgUnits = []
   },
   'SET_ORGS_MASTER' (state, orgUnits) {
-    console.log(orgUnits)
     state.orgs = orgUnits
   },
   'SET_ORG_MASTER' (state, org) {
@@ -64,7 +64,7 @@ const actions = {
     })
       .then(res => res.data.result)
       .then(orgUnits => {
-        commit('RESET_ORG')
+        // commit('RESET_ORG')
         commit('SET_ORGANIZATION_UNIT', orgUnits)
         commit('SET_ORGS_MASTER', orgUnits)
       })

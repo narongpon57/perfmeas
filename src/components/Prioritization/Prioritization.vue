@@ -75,6 +75,11 @@ export default {
       this.$store.dispatch('prioritization/searchPrioritization', { org, year })
         .then(() => {
           this.isSearch = true
+          this.$store.commit('organization/SET_ORG_SELECTED', {
+            org: org,
+            year: year,
+            type: org.type
+          })
         })
     }
   },
@@ -92,6 +97,8 @@ export default {
       }
       this.searchPrioritization(payload)
         .then(() => {
+          localStorage.setItem('year', this.yearSelected)
+          localStorage.setItem('org', JSON.stringify(this.orgSelected))
           this.isSearch = true
         })
     },
