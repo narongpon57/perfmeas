@@ -9,7 +9,7 @@
         <th>ชื่อตัวขี้วัด</th>
         <!-- <th>QPS Type</th> -->
         <th>Indicator Type</th>
-        <th style="width:100px;" v-for="item in criteria" :key="item.id">{{ item.name }}</th>
+        <th style="width:100px;" v-for="item in criteria" :key="item.id">{{ item.name }} <span class="more-information" @click="showModal(item)">?</span></th>
         <th>Priority score</th>
       </thead>
       <tbody>
@@ -75,23 +75,34 @@
     <div v-if="msg" class="text-center text-success">
       {{ msg }}
     </div>
+     <app-criteria
+      v-show="isModalVisible"
+      @close="closeModal"
+      :criteria="selectedCriteria"
+    />
   </div>
 </template>
 
 <script>
 import { mapFields } from 'vuex-map-fields'
 import { saveAs } from 'file-saver'
+import CriteriaScaleModal from '@/components/CriteriaScaleModal.vue'
 
 export default {
   props: {
     org: Object,
     year: String
   },
+  components: {
+    appCriteria: CriteriaScaleModal
+  },
   data () {
     return {
       isSave: false,
       user: JSON.parse(localStorage.getItem('user')),
-      isDraft: true
+      isDraft: true,
+      isModalVisible: false,
+      selectedCriteria: []
     }
   },
   created () {
@@ -101,6 +112,13 @@ export default {
     })
   },
   methods: {
+    showModal (criteria) {
+      this.selectedCriteria = criteria
+      this.isModalVisible = true
+    },
+    closeModal () {
+      this.isModalVisible = false
+    },
     priorityScore (index) {
       if (this.prioritization[index].prioritization_score !== undefined) {
         const result = this.prioritization[index].prioritization_score.reduce((total, obj, index) => {
@@ -189,6 +207,12 @@ export default {
     background-color: red;
     color: white;
     font-weight: bold;
+  }
+  .more-information {
+    cursor: pointer;
+    &:hover {
+      color: black;
+    }
   }
 }
 </style>
