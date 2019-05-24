@@ -16,7 +16,7 @@
                   </select>
                 </div>
               </div>
-              <div class="row gorm-group" v-if="typeSelected === 'Top Prioritization Score'">
+              <div class="row gorm-group" v-if="typeSelected === 'Top Priority Score'">
                 <div class="col-md-3 text-right label-text">
                   Year:
                 </div>

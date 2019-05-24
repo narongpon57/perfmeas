@@ -179,10 +179,12 @@ export default {
       this.$store.commit('performanceMeasurement/SET_SUMMARY_RESULT', result)
       return isNaN((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit) ? 'N/A' : ((this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit).toFixed(2)
     },
-    checkTarget (multiplier, divisor, unit, operator, target) {
+    checkTarget (multiplier, divisor, unit, operator, target1) {
       let activeClass = ''
-      if (!isNaN((multiplier / divisor) * unit)) {
-        let ytdMonth = (multiplier / divisor) * unit
+      let target = parseInt(target1)
+      let ytdMonth = (multiplier / divisor) * unit
+      if (!isNaN(ytdMonth)) {
+        // let ytdMonth = (multiplier / divisor) * unit
         let onTarget = ''
         switch (operator) {
           case '=':
@@ -214,6 +216,7 @@ export default {
       let activeClass = ''
       let target = parseInt(target1)
       let ytdMonth = (this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit
+      console.log(target, target1, ytdMonth)
       if (!isNaN(ytdMonth)) {
         let onTarget = ''
         switch (operator) {
@@ -230,7 +233,7 @@ export default {
             onTarget = ytdMonth >= target
             break
           case '<=':
-            onTarget = ytdMonth >= target
+            onTarget = ytdMonth <= target
             break
           case '!=':
             onTarget = ytdMonth !== target

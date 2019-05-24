@@ -42,7 +42,7 @@
           </td>
           <td></td>
         </tr>
-        <tr v-for="(item, index) in prioritization" :key="item.id">
+        <tr v-for="(item, index) in filterDuplicate" :key="item.id">
           <td class="">{{ item.code }}</td>
           <td class="text-left">{{ item.name }}</td>
           <td class="">{{ item.indicator_type }}</td>
@@ -184,6 +184,12 @@ export default {
     ]),
     showButton () {
       return this.prioritization.length && parseInt(this.user.id) === this.org.creator.id && !this.perf.length && this.isDraft && this.onPeriod
+    },
+    filterDuplicate () {
+      return Array.from(new Set(this.prioritization.map(a => a.code)))
+        .map(code => {
+          return this.prioritization.find(a => a.code === code)
+        })
     }
   },
   filters: {

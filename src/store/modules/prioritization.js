@@ -47,7 +47,7 @@ const mutations = {
     Object.assign(state, initialState())
   },
   'SET_TOP_SCORE' (state, score) {
-    state.topScore = score
+    state.topScore = score === null ? 0 : score
   }
 }
 
@@ -99,6 +99,12 @@ const actions = {
             }
           }
           resolve()
+          // console.log(state.prioritization)
+          // const uniqueIndicator = Array.from(new Set(state.prioritization.map(a => a.code)))
+          //   .map(code => {
+          //     return state.prioritization.find(a => a.code === code)
+          //   })
+          // console.log(uniqueIndicator)
         })
         .catch(err => {
           console.log(err)
