@@ -4,7 +4,7 @@
       <div class="panel content bg-content">
         <div class="topic headline">Period Management</div>
         <div class="text-right">
-          <router-link to="/period_management_form" tag="button" class="btn btn-primary">Add Period</router-link>
+          <router-link to="/period_management_form" tag="button" class="btn btn-primary" v-if="isAdmin()">Add Period</router-link>
         </div>
         <div class="container">
           <div class="row form-group">
@@ -88,7 +88,8 @@ export default {
         name: '',
         status: '',
         year: ''
-      }
+      },
+      user: JSON.parse(localStorage.getItem('user'))
     }
   },
   methods: {
@@ -100,6 +101,9 @@ export default {
         .then(() => {
           this.isSearch = true
         })
+    },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
     }
   },
   computed: {

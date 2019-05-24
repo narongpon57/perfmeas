@@ -38,7 +38,7 @@
               <button class="btn btn-info" @click="search">Search</button>
             </div>
             <div class="col-md-6">
-              <button class="btn btn-danger">Clear</button>
+              <button class="btn btn-danger" @click="clear()">Clear</button>
             </div>
           </div>
         </div>
@@ -104,6 +104,11 @@ export default {
     },
     selectOrgType (type) {
       this.searchOrg(type)
+    },
+    clear() {
+      this.isSearch = false
+      localStorage.removeItem('org')
+      this.$store.commit('organization/RESET_STATE')
     }
   },
   computed: {

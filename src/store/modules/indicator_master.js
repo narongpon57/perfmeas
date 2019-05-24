@@ -4,7 +4,9 @@ import { getField, updateField } from 'vuex-map-fields'
 const initialState = () => {
   return {
     indicators: [],
-    indicator: []
+    indicator: {
+      is_active: 1
+    }
   }
 }
 
@@ -34,11 +36,17 @@ const actions = {
     commit('RESET_STATE')
   },
   saveIndicator ({ commit }, indicators) {
-    axios.post('/indicator', indicators)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.post('/indicator', indicators)
+        .then(res => {
+          // commit('RESET_STATE')
+          resolve()
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
   },
   searchIndicator ({ commit }, payload) {
     return new Promise((resolve, reject) => {
@@ -54,7 +62,10 @@ const actions = {
           commit('SET_INDICATORS', indicatorFilter)
           resolve()
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
     })
   },
   getIndicators ({ commit }) {
@@ -76,11 +87,17 @@ const actions = {
   },
 
   updateIndicator ({ commit }, indicators) {
-    axios.put('/indicator', indicators)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.put('/indicator', indicators)
+        .then(res => {
+          resolve()
+          // commit('RESET_STATE')
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
   }
 }
 

@@ -33,7 +33,7 @@
                 icon="times"
                 class="remove-icon"
                 @click="remove(index)"
-                v-if="index !== 0 && item.summary_result === null"/>
+                v-if="index > (oldLengthPerformanceMeasurement - 1) && item.summary_result === null"/>
             </td>
             <td rowspan="2">{{ item.code }}</td>
             <td rowspan="2">{{ item.name }}</td>
@@ -41,34 +41,34 @@
             <td rowspan="2">{{ item.formular }}</td>
             <td rowspan="2">{{ item.operator }}</td>
             <td rowspan="2">{{ item.target }}</td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jan_multiplier_value" :disabled="disabledForm(item.frequency, 1)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.feb_multiplier_value" :disabled="disabledForm(item.frequency, 2)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.mar_multiplier_value" :disabled="disabledForm(item.frequency, 3)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.apr_multiplier_value" :disabled="disabledForm(item.frequency, 4)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.may_multiplier_value" :disabled="disabledForm(item.frequency, 5)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jun_multiplier_value" :disabled="disabledForm(item.frequency, 6)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jul_multiplier_value" :disabled="disabledForm(item.frequency, 7)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.aug_multiplier_value" :disabled="disabledForm(item.frequency, 8)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.sep_multiplier_value" :disabled="disabledForm(item.frequency, 9)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.oct_multiplier_value" :disabled="disabledForm(item.frequency, 10)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.nov_multiplier_value" :disabled="disabledForm(item.frequency, 11)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.dec_multiplier_value" :disabled="disabledForm(item.frequency, 12)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jan_multiplier_value" :disabled="disabledForm(item.frequency, 1)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.feb_multiplier_value" :disabled="disabledForm(item.frequency, 2)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.mar_multiplier_value" :disabled="disabledForm(item.frequency, 3)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.apr_multiplier_value" :disabled="disabledForm(item.frequency, 4)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.may_multiplier_value" :disabled="disabledForm(item.frequency, 5)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jun_multiplier_value" :disabled="disabledForm(item.frequency, 6)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jul_multiplier_value" :disabled="disabledForm(item.frequency, 7)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.aug_multiplier_value" :disabled="disabledForm(item.frequency, 8)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.sep_multiplier_value" :disabled="disabledForm(item.frequency, 9)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.oct_multiplier_value" :disabled="disabledForm(item.frequency, 10)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.nov_multiplier_value" :disabled="disabledForm(item.frequency, 11)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.dec_multiplier_value" :disabled="disabledForm(item.frequency, 12)"></td>
             <td>{{ ytdMultiplier(item) }}</td>
           </tr>
           <tr :key="item.risk_assessment_indicator_id">
             <td>{{ item.divisor }}</td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jan_divisor_value" :disabled="disabledForm(item.frequency, 1)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.feb_divisor_value" :disabled="disabledForm(item.frequency, 2)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.mar_divisor_value" :disabled="disabledForm(item.frequency, 3)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.apr_divisor_value" :disabled="disabledForm(item.frequency, 4)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.may_divisor_value" :disabled="disabledForm(item.frequency, 5)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jun_divisor_value" :disabled="disabledForm(item.frequency, 6)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.jul_divisor_value" :disabled="disabledForm(item.frequency, 7)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.aug_divisor_value" :disabled="disabledForm(item.frequency, 8)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.sep_divisor_value" :disabled="disabledForm(item.frequency, 9)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.oct_divisor_value" :disabled="disabledForm(item.frequency, 10)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.nov_divisor_value" :disabled="disabledForm(item.frequency, 11)"></td>
-            <td><input type="text" class="form-control input-perf" v-model="item.dec_divisor_value" :disabled="disabledForm(item.frequency, 12)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jan_divisor_value" :disabled="disabledForm(item.frequency, 1)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.feb_divisor_value" :disabled="disabledForm(item.frequency, 2)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.mar_divisor_value" :disabled="disabledForm(item.frequency, 3)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.apr_divisor_value" :disabled="disabledForm(item.frequency, 4)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.may_divisor_value" :disabled="disabledForm(item.frequency, 5)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jun_divisor_value" :disabled="disabledForm(item.frequency, 6)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.jul_divisor_value" :disabled="disabledForm(item.frequency, 7)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.aug_divisor_value" :disabled="disabledForm(item.frequency, 8)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.sep_divisor_value" :disabled="disabledForm(item.frequency, 9)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.oct_divisor_value" :disabled="disabledForm(item.frequency, 10)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.nov_divisor_value" :disabled="disabledForm(item.frequency, 11)"></td>
+            <td><input type="number" class="form-control input-perf" v-model="item.dec_divisor_value" :disabled="disabledForm(item.frequency, 12)"></td>
             <td>{{ ydtDivisor(item) }}</td>
           </tr>
           <tr :key="item.code" style="background-color: antiquewhite;">
@@ -93,13 +93,13 @@
         </tr>
       </tbody>
     </table>
-     <div v-if="performanceMeasurement.length && !disabledForm">
+     <div v-if="performanceMeasurement.length && isOwner()">
       <div class="col-md-12 form-group">
         <button class="btn btn-info" @click="showModal">Add Indicator</button>
       </div>
       <div class="col-md-12 form-group text-center">
         <button class="btn btn-primary" @click="save">Save</button>
-        <button class="btn btn-danger">Close</button>
+        <!-- <button class="btn btn-danger">Close</button> -->
       </div>
     </div>
     <app-ind-perf-modal
@@ -198,7 +198,7 @@ export default {
             onTarget = ytdMonth >= target
             break
           case '<=':
-            onTarget = ytdMonth >= target
+            onTarget = ytdMonth <= target
             break
           case '!=':
             onTarget = ytdMonth !== target
@@ -210,8 +210,9 @@ export default {
       }
       return activeClass
     },
-    checkTargetSummary (perf, unit, operator, target) {
+    checkTargetSummary (perf, unit, operator, target1) {
       let activeClass = ''
+      let target = parseInt(target1)
       let ytdMonth = (this.ytdMultiplier(perf) / this.ydtDivisor(perf)) * unit
       if (!isNaN(ytdMonth)) {
         let onTarget = ''
@@ -267,11 +268,15 @@ export default {
       else if (frequency === 'Monthly') mod = 1
 
       return !parseInt(this.user.id) === this.org.creator.id || !this.onPeriod || month % mod !== 0
+    },
+    isOwner () {
+      return parseInt(this.user.id) === this.org.creator.id && this.onPeriod
     }
   },
   computed: {
     ...mapFields('performanceMeasurement', [
-      'performanceMeasurement'
+      'performanceMeasurement',
+      'oldLengthPerformanceMeasurement'
     ]),
     ...mapFields('period', [
       'onPeriod'
@@ -330,5 +335,10 @@ export default {
 .input-perf {
   padding: .1rem;
   font-size: 12px;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

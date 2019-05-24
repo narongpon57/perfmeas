@@ -4,7 +4,7 @@
       <div class="panel content bg-content">
         <div class="topic headline">Indicator</div>
         <div class="text-right">
-          <router-link to="/indicator_form" tag="button" class="btn btn-primary">Add Indicator</router-link>
+          <router-link to="/indicator_form" tag="button" class="btn btn-primary" v-if="isAdmin()">Add Indicator</router-link>
         </div>
         <div class="container">
           <div class="row form-group">
@@ -89,21 +89,17 @@ export default {
       measurement_domain: ['Clinical Quality Measures', 'Non Clinical Quality Measures', 'Population Health Quality Measures', 'Related Health Care Delivery Measures', 'Related Population Health Measures'],
       standard: ['Disease-Specific Care Programs', 'Facility Management and Safety', 'Hospital Management', 'Patient Care Process', 'Work Process'],
       frequency: ['Monthly', 'Quarterly', 'Half-yearly', 'Yearly'],
-      risk: {
-        risk_group: '',
-        risk_type: '',
-        identified: '',
-        problem_area: ''
-      },
       indicator: {
         code: '',
         name: '',
         frequency: '',
         indicator_type: '',
         measurement_domain: '',
-        standard: ''
+        standard: '',
+        is_master: true
       },
-      isSearch: false
+      isSearch: false,
+      user: JSON.parse(localStorage.getItem('user'))
     }
   },
   methods: {
@@ -117,13 +113,19 @@ export default {
           this.isSearch = true
         })
     },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
+    },
     clear () {
       this.isSearch = false
-      this.risk = {
-        risk_group: '',
-        risk_type: '',
-        identified: '',
-        problem_area: ''
+      this.indicator = {
+        code: '',
+        name: '',
+        frequency: '',
+        indicator_type: '',
+        measurement_domain: '',
+        standard: '',
+        is_master: true
       }
     }
   },

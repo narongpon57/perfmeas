@@ -10,6 +10,7 @@
           <router-link to="/risk_assessment" activeClass="active" tag="li"><a>Risk Assessment</a></router-link>
           <router-link to="/prioritization" activeClass="active" tag="li"><a>Prioritization</a></router-link>
           <router-link to="/performance_measurement" activeClass="active" tag="li"><a>Performance Measurement</a></router-link>
+          <router-link to="/summary" activeClass="active" tag="li" v-if="isAdmin()"><a>Report</a></router-link>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Administrator
@@ -18,7 +19,7 @@
               <!-- <router-link to="/measurement_domain" tag="li"><a>Measurement Domain</a></router-link> -->
               <!-- <router-link to="/standard" tag="li"><a>Standard</a></router-link> -->
               <router-link to="/organization_management" tag="li"><a>Organization Management</a></router-link>
-              <router-link to="/user_management" tag="li"><a>User Management</a></router-link>
+              <!-- <router-link to="/user_management" tag="li"><a>User Management</a></router-link> -->
               <!-- <router-link to="/category" tag="li"><a>Category Management</a></router-link> -->
               <router-link to="/risk" tag="li"><a>Risk Management</a></router-link>
               <!-- <router-link to="/risk_type" tag="li"><a>Risk Type</a></router-link> -->
@@ -44,7 +45,8 @@
 export default {
   data () {
     return {
-      username: JSON.parse(localStorage.getItem('user')).username
+      username: JSON.parse(localStorage.getItem('user')).username,
+      user: JSON.parse(localStorage.getItem('user'))
     }
   },
   methods: {
@@ -52,6 +54,9 @@ export default {
       localStorage.clear()
       this.$store.dispatch('resetAllState')
       this.$router.push('/login')
+    },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
     }
   }
 }

@@ -49,6 +49,18 @@ const actions = {
           reject(err)
         })
     })
+  },
+  exportIndicator ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      axios.get('/indicator_export', { params: payload })
+        .then(res => {
+          resolve(res.data.result)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
   }
 }
 

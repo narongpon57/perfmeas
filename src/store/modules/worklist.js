@@ -29,6 +29,16 @@ const actions = {
       .catch(err => {
         console.log(err)
       })
+  },
+  getAdminWorkList ({ commit }) {
+    axios.get('/admin_worklist')
+      .then(res => res.data.result)
+      .then(worklists => {
+        commit('SET_WORKLIST', worklists)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 

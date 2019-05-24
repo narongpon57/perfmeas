@@ -12,6 +12,7 @@ import user from './modules/user'
 import performanceMeasurement from './modules/performance_measurement'
 import exportExcel from './modules/export_excel'
 import period from './modules/period'
+import summary from './modules/summary'
 
 Vue.use(Vuex)
 
@@ -28,7 +29,8 @@ export default new Vuex.Store({
     user,
     performanceMeasurement,
     exportExcel,
-    period
+    period,
+    summary
   },
   actions: {
     resetAllState ({ commit }) {
@@ -42,6 +44,7 @@ export default new Vuex.Store({
       commit('user/RESET_STATE')
       commit('performanceMeasurement/RESET_STATE')
       commit('period/RESET_STATE')
+      commit('summary/RESET_STATE')
     }
   }
 })

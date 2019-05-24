@@ -8,7 +8,8 @@ const initialState = () => {
     prioritization: [],
     count: 0,
     perf: [],
-    msg: null
+    msg: null,
+    topScore: 0
   }
 }
 
@@ -44,6 +45,9 @@ const mutations = {
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
+  },
+  'SET_TOP_SCORE' (state, score) {
+    state.topScore = score
   }
 }
 
@@ -74,6 +78,10 @@ const actions = {
           const prioritization = res[1].data.result
           commit('SET_PERF', perf)
           commit('SET_PRIORITIZATION', prioritization)
+          const topScore = prioritization.reduce((max, obj) => {
+            return obj.priority_score > max ? obj.priority_score : max
+          }, 0)
+          commit('SET_TOP_SCORE', topScore)
           if (prioritization.length) {
             for (let [i, item] of Object.entries(prioritization)) {
               axios.get('/prioritization_score', {
@@ -101,15 +109,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios.post('/prioritization', payload)
         .then(res => {
-          let msg = 'Save Success'
-          if (payload.isDraft) {
-            msg = 'Save Draft Success'
-          }
-          commit('SET_RETURN_MSG', msg)
+          const topScore = payload.prioritization.reduce((max, obj) => {
+            return obj.priority_score > max ? obj.priority_score : max
+          }, 0)
+          commit('SET_TOP_SCORE', topScore)
           resolve()
         })
         .catch(err => {
-          console.log(err)
+          reject(err)
         })
     })
   }

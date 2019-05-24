@@ -44,6 +44,8 @@ export default {
     let user = JSON.parse(localStorage.getItem('user'))
     if (parseInt(user.is_admin) === 0) {
       this.$store.dispatch('worklist/getWorkList', user.id)
+    } else {
+      this.$store.dispatch('worklist/getAdminWorkList')
     }
   },
   methods: {

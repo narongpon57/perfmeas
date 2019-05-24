@@ -5,6 +5,7 @@ const initialState = () => {
   return {
     risks: [],
     risk: {
+      is_active: 1,
       existing_risk: []
     }
   }
@@ -45,11 +46,24 @@ const actions = {
   },
 
   saveRisk ({ commit }, risk) {
-    axios.post('/risk', risk)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.post('/risk', risk)
+        .then(res => {
+          // commit('RESET_STATE')
+          const notify = {
+            type: 'success',
+            text: 'Save Success'
+          }
+          resolve(notify)
+        })
+        .catch(() => {
+          const notify = {
+            type: 'error',
+            text: 'Save Failed'
+          }
+          reject(notify)
+        })
+    })
   },
   searchRisk ({ commit }, payload) {
     return new Promise((resolve, reject) => {
@@ -88,11 +102,24 @@ const actions = {
   },
 
   updateRisk ({ commit }, risk) {
-    axios.put('/risk', risk)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.put('/risk', risk)
+        .then(res => {
+          const notify = {
+            type: 'success',
+            text: 'Update Success'
+          }
+          resolve(notify)
+          // commit('RESET_STATE')
+        })
+        .catch(() => {
+          const notify = {
+            type: 'error',
+            text: 'Update Failed'
+          }
+          reject(notify)
+        })
+    })
   }
 }
 

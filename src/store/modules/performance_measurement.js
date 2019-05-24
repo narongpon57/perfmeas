@@ -4,6 +4,7 @@ import { getField, updateField } from 'vuex-map-fields'
 const initialState = () => {
   return {
     performanceMeasurement: [],
+    oldLengthPerformanceMeasurement: [],
     performanceIndicators: []
   }
 }
@@ -20,6 +21,9 @@ const mutations = {
   },
   'SET_PERFORMANCE_MEASUREMENT' (state, performanceMeasurement) {
     state.performanceMeasurement = performanceMeasurement
+  },
+  'SET_OLD_PERFORMANCE_MEASUREMENT' (state, performanceMeasurement) {
+    state.oldLengthPerformanceMeasurement = performanceMeasurement.length
   },
   'SET_SUMMARY_RESULT' (state, result) {
     state.performanceMeasurement[result.index].summary_result = result.ytd
@@ -64,7 +68,8 @@ const mutations = {
         formular: i.formular,
         operator: i.operator,
         target: i.target,
-        unit: i.unit
+        unit: i.unit,
+        frequency: i.frequency
       })
     }
   },
@@ -84,6 +89,7 @@ const actions = {
         .then(res => res.data.result)
         .then(performanceMeasurement => {
           commit('SET_PERFORMANCE_MEASUREMENT', performanceMeasurement)
+          commit('SET_OLD_PERFORMANCE_MEASUREMENT', performanceMeasurement)
           resolve()
         })
         .catch(err => {

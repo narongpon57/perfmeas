@@ -11,47 +11,74 @@
                   Risk Code:
                 </div>
                 <div class="col-md-9">
-                  <input type="text" class="form-control form-control-sm" v-model="risk.code" readonly>
+                  <input type="text" class="form-control" v-model="risk.code" readonly>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-3 text-right label-text">
-                  Risk Type:
+                  Risk Type <span class="text-danger">*</span> :
                 </div>
                 <div class="col-md-9">
-                  <v-select v-model="risk.risk_type" :options="risks_type"></v-select>
+                  <select
+                    v-model="risk.risk_type"
+                    class="form-control"
+                    :disabled="!isAdmin()"
+                    :class="isValidaInput(risk.risk_type)">
+                    <option v-for="type in risks_type" :key="type">{{ type }}</option>
+                  </select>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-3 text-right label-text">
-                  Risk Group:
+                  Risk Group <span class="text-danger">*</span> :
                 </div>
                 <div class="col-md-9">
-                  <v-select v-model="risk.risk_group" :options="risk_group"></v-select>
+                  <select
+                    v-model="risk.risk_group"
+                    class="form-control"
+                    :disabled="!isAdmin()"
+                    :class="isValidaInput(risk.risk_group)">
+                    <option v-for="group in risk_group" :key="group">{{ group }}</option>
+                  </select>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-3 text-right label-text">
-                  Risk Identified:
+                  Risk Identified <span class="text-danger">*</span> :
                 </div>
                 <div class="col-md-9">
-                  <textarea class="form-control" rows="3" v-model="risk.identified"></textarea>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    v-model="risk.identified"
+                    :disabled="!isAdmin()"
+                    :class="isValidaInput(risk.identified)"></textarea>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-3 text-right label-text">
-                  Problem Area or Activity:
+                  Problem Area or Activity <span class="text-danger">*</span> :
                 </div>
                 <div class="col-md-9">
-                  <textarea class="form-control" rows="3" v-model="risk.problem_area"></textarea>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    v-model="risk.problem_area"
+                    :disabled="!isAdmin()"
+                    :class="isValidaInput(risk.problem_area)"></textarea>
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-md-3 text-right label-text">
-                  Description:
+                  Description <span class="text-danger">*</span> :
                 </div>
                 <div class="col-md-9">
-                  <textarea class="form-control" rows="5" v-model="risk.description"></textarea>
+                  <textarea
+                    class="form-control"
+                    rows="5"
+                    v-model="risk.description"
+                    :disabled="!isAdmin()"
+                    :class="isValidaInput(risk.description)"></textarea>
                 </div>
               </div>
               <div class="row form-group">
@@ -60,11 +87,21 @@
                 </div>
                 <div class="col-md-9">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" v-model="risk.is_active" value="1">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      v-model="risk.is_active"
+                      :disabled="!isAdmin()"
+                      value="1">
                     <label class="form-check-label" for="">Active</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" v-model="risk.is_active" value="0">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      v-model="risk.is_active"
+                      :disabled="!isAdmin()"
+                      value="0">
                     <label class="form-check-label" for="">Inactive</label>
                   </div>
                 </div>
@@ -89,6 +126,7 @@
                           <font-awesome-icon
                             icon="times"
                             @click="removeExistingMeasure(index)"
+                            v-if="isAdmin()"
                             class="remove-icon"/>
                         </td>
                         <td>{{ existing.indicator.code }}</td>
@@ -105,11 +143,18 @@
                     class="col-md-12 form-group text-left">
                     <button
                       class="btn btn-info"
+                      v-if="isAdmin()"
                       @click="showIndicatorModal()">Add Indicator</button>
                   </div>
                 </div>
               </div>
-              <div class="row form-group ">
+              <p
+                class="text-center font-weight-bold"
+                :class="returnMsgClass"
+                v-if="returnMsg !== ''">{{ returnMsg }}</p>
+              <div
+                class="row form-group"
+                v-if="isAdmin()">
                 <div class="col-md-12 text-center">
                   <button class="btn btn-primary" @click="save()">Save</button>
                   <button class="btn btn-danger" @click="$router.go(-1)">Close</button>
@@ -141,7 +186,11 @@ export default {
       risks_type: ['General Risk', 'Clinical Risk', 'Sepcific Risk'],
       risk_group: ['OPD', 'IPD', 'Critical Care', 'Back Office', 'Medical Support'],
       isIndicatorModalVisible: false,
-      indicatorId: []
+      indicatorId: [],
+      isSubmitted: false,
+      user: JSON.parse(localStorage.getItem('user')),
+      returnMsg: '',
+      returnMsgClass: ''
     }
   },
   created () {
@@ -158,15 +207,35 @@ export default {
     ]),
     save () {
       let riskData = {}
-      console.log(this.risk)
+      this.isSubmitted = true
       if (this.risk.id === undefined) {
         this.saveRisk(Object.assign(riskData, this.risk))
+          .then(() => {
+            this.returnMsg = 'Save success'
+            this.returnMsgClass = 'text-success'
+          })
+          .catch(() => {
+            this.returnMsg = 'Save failed'
+            this.returnMsgClass = 'text-danger'
+          })
       } else {
         this.updateRisk(Object.assign(riskData, this.risk))
+          .then(() => {
+            this.returnMsg = 'Update success'
+            this.returnMsgClass = 'text-success'
+          })
+          .catch(() => {
+            this.returnMsg = 'Update failed'
+            this.returnMsgClass = 'text-danger'
+          })
       }
     },
     back () {
       this.$router.go(-1)
+    },
+    isValidaInput (value) {
+      let isValid = this.isSubmitted && (value === undefined || value === '')
+      return { 'is-invalid': isValid }
     },
     removeExistingMeasure (index) {
       let r = confirm('Do you want to delete this row ?')
@@ -182,6 +251,9 @@ export default {
     },
     closeIndicatorModal () {
       this.isIndicatorModalVisible = false
+    },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
     }
   },
   computed: {

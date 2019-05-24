@@ -75,7 +75,6 @@ export default {
     }
   },
   created () {
-    console.log(this.orgs)
   },
   methods: {
     selectOrgType (type) {

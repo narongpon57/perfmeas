@@ -4,7 +4,7 @@
       <div class="panel content bg-content">
         <div class="topic headline">Risk</div>
         <div class="text-right">
-          <router-link to="/risk_form" tag="button" class="btn btn-primary">Add Risk</router-link>
+          <router-link to="/risk_form" tag="button" class="btn btn-primary" v-if="isAdmin()">Add Risk</router-link>
         </div>
         <div class="container">
           <div class="row form-group">
@@ -79,9 +79,11 @@ export default {
         risk_group: '',
         risk_type: '',
         identified: '',
-        problem_area: ''
+        problem_area: '',
+        is_master: true
       },
-      isSearch: false
+      isSearch: false,
+      user: JSON.parse(localStorage.getItem('user'))
     }
   },
   methods: {
@@ -102,8 +104,12 @@ export default {
         risk_group: '',
         risk_type: '',
         identified: '',
-        problem_area: ''
+        problem_area: '',
+        is_master: true
       }
+    },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
     }
   },
   computed: {

@@ -25,7 +25,7 @@
             <font-awesome-icon
               icon="times"
               @click="removeRisk(index)"
-              v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
+              v-if="isCreator() && addRiskBtn.includes(assessment.status) && onPeriod"
               class="remove-icon"/>
           </td>
           <td>{{ item.risk.code }}</td>
@@ -36,12 +36,14 @@
           <td class="probability"><input
             type="text"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
+            :class="isScoreValidaInput(item.probability)"
+            :disabled="!isCreator() || !addRiskBtn.includes(assessment.status) || !onPeriod"
             v-model="item.probability"></td>
           <td class="impact"><input
             type="text"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
+            :class="isScoreValidaInput(item.impact)"
+            :disabled="!isCreator() || !addRiskBtn.includes(assessment.status) || !onPeriod"
             v-model="item.impact"></td>
           <td class="risk-score"><input
             type="text"
@@ -50,26 +52,27 @@
             v-bind:class="riskScoreStyle(item.probability * item.impact)"
             readonly="readonly"
             :value="item.probability * item.impact"></td>
-          <td class="indicator">
+          <td class="indicator" :class="isIndicator(item.risk_indicator)">
             <div v-for="(indicator, i) in item.risk_indicator"
               :key="indicator.indicator.id">
               <font-awesome-icon
                 icon="times"
                 class="remove-icon"
-                v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
+                v-if="isCreator() && addRiskBtn.includes(assessment.status) && onPeriod"
                 @click="removeIndicator(index, i)"/>
               <span v-else>-</span> {{ indicator.indicator.name }}
             </div>
             <font-awesome-icon
               icon="plus-circle"
               class="float-right add-icon"
-              v-if="parseInt(user.id) === org.creator.id && addRiskBtn.includes(assessment.status)"
+              v-if="isCreator() && addRiskBtn.includes(assessment.status) && onPeriod"
               @click="showIndicatorModal(index)"/>
           </td>
           <td class="strategy"><textarea
-            row="3"
+            rows="6"
             class="form-control"
-            :disabled="parseInt(user.id) !== org.creator.id || !addRiskBtn.includes(assessment.status)"
+            :class="isValidaInput(item.mitigation_strategy)"
+            :disabled="!isCreator() || !addRiskBtn.includes(assessment.status) || !onPeriod"
             v-model="item.mitigation_strategy"></textarea></td>
         </tr>
         <tr v-show="!assessment.risk_assessment.length">
@@ -77,18 +80,28 @@
         </tr>
       </tbody>
     </table>
-    <div>
+    <div v-if="onPeriod">
       <div
-        class="col-md-12 form-group text-left"
+        class="row form-group"
         v-if="parseInt(year) === new Date().getFullYear()">
-        <button
-          class="btn btn-info"
-          @click="showRiskModal()"
-          v-if="parseInt(user.id) === org.creator.id && addRiskBtn.indexOf(assessment.status) > -1">Add Risk</button>
+        <div class="col-md-6 text-left">
+          <button
+            class="btn btn-info"
+            @click="showRiskModal()"
+            v-if="isCreator() && addRiskBtn.indexOf(assessment.status) > -1">Add Risk</button>
+        </div>
+        <div class="col-md-6 text-right">
+          <button
+            class="btn btn-warning"
+            @click="saveDraft()"
+            v-if="isCreator() && saveDraftBtn.indexOf(assessment.status) > -1 && assessment.risk_assessment.length">
+            Save Draft
+          </button>
+        </div>
       </div>
       <div
         class="col-md-12 form-group text-right"
-        v-if="org.step1_approver.id === parseInt(user.id) && managerApproveBtn.indexOf(assessment.status) > -1">
+        v-if="isApprover() && managerApproveBtn.indexOf(assessment.status) > -1">
         <button
           class="btn btn-success"
           @click="showApproveModal('Approve')">Approve</button>
@@ -98,7 +111,7 @@
       </div>
       <div
         class="col-md-12 form-group text-right"
-        v-if="parseInt(user.is_admin) && adminApproveBtn.indexOf(assessment.status) > -1">
+        v-if="isAdmin() && adminApproveBtn.indexOf(assessment.status) > -1">
         <button
           class="btn btn-success"
           @click="showApproveModal('Approve')">Approve</button>
@@ -113,10 +126,11 @@
         {{ msg }}
       </div>
       <div class="col-md-12 form-group"
-        v-if="assessment.risk_assessment.length && parseInt(user.id) === org.creator.id && addRiskBtn.indexOf(assessment.status) > -1">
+        v-if="assessment.risk_assessment.length && isCreator() && addRiskBtn.indexOf(assessment.status) > -1">
         <button class="btn btn-primary" @click="save()">Save</button>
-        <button class="btn btn-danger">Close</button>
       </div>
+    </div>
+    <div class="row form-group">
       <div class="col-md-8 offset-md-2 form-group" v-if="approval.length">
         <app-approval
           :approval="approval"></app-approval>
@@ -169,13 +183,18 @@ export default {
       row: 0,
       indicatorId: [],
       user: JSON.parse(localStorage.getItem('user')),
-      addRiskBtn: [CONSTANTS.MANAGER_REVIEW, CONSTANTS.QIKM_REVIEW, null],
+      addRiskBtn: [CONSTANTS.MANAGER_REVIEW, CONSTANTS.QIKM_REVIEW, null, CONSTANTS.DRAFT],
       managerApproveBtn: [CONSTANTS.INITIAL],
       adminApproveBtn: [CONSTANTS.MANAGER_APPROVE, CONSTANTS.WAITING_FOR_APPROVE],
-      saveCloseBtn: [CONSTANTS.QIKM_APPROVE, CONSTANTS.MANAGER_APPROVE]
+      saveDraftBtn: [CONSTANTS.DRAFT, null],
+      isSubmitted: false
     }
   },
   created () {
+    this.$store.dispatch('period/getPeriodCompare', {
+      type: 'Risk Assessment',
+      year: new Date().getFullYear()
+    })
   },
   methods: {
     ...mapActions('riskAssessment', [
@@ -208,16 +227,47 @@ export default {
       this.isApproveModalVisible = false
     },
     save () {
+      this.isSubmitted = true
       let payload = {
         assessment: this.assessment,
         org: this.org,
         year: this.year
       }
+      let valid = true
+      for (let i of this.assessment.risk_assessment) {
+        let impact = parseInt(i.impact) < 1 || parseInt(i.impact) > 5
+        let probability = parseInt(i.probability) < 1 || parseInt(i.probability) > 5
+        let mitigationStrategy = i.mitigation_strategy === null || i.mitigation_strategy === '' || i.mitigation_strategy === undefined
+        let indicatorLength = i.risk_indicator.length
+        if (impact || probability || mitigationStrategy || indicatorLength === 0) {
+          valid = false
+        }
+      }
+      if (valid) {
+        if (this.assessment.id === null) {
+          payload['status'] = CONSTANTS.INITIAL
+          this.saveRiskAssess(payload)
+        } else {
+          if (this.assessment.status === 'Draft') {
+            payload['status'] = CONSTANTS.INITIAL
+          } else {
+            payload['status'] = this.assessment.status === CONSTANTS.MANAGER_REVIEW ? CONSTANTS.INITIAL : CONSTANTS.WAITING_FOR_APPROVE
+          }
+          this.updateRiskAssess(payload)
+        }
+      }
+    },
+    saveDraft () {
+      this.isSubmitted = false
+      let payload = {
+        assessment: this.assessment,
+        org: this.org,
+        year: this.year,
+        status: CONSTANTS.DRAFT
+      }
       if (this.assessment.id === null) {
-        payload['status'] = CONSTANTS.INITIAL
         this.saveRiskAssess(payload)
       } else {
-        payload['status'] = this.assessment.status === CONSTANTS.MANAGER_REVIEW ? CONSTANTS.INITIAL : CONSTANTS.WAITING_FOR_APPROVE
         this.updateRiskAssess(payload)
       }
     },
@@ -246,7 +296,6 @@ export default {
       return className
     },
     exportExcel () {
-      console.log(this.org, this.year)
       this.$store.dispatch('exportExcel/exportRiskAssessment', {
         org_id: this.org.id,
         year: this.year
@@ -263,6 +312,31 @@ export default {
         view[i] = s.charCodeAt(i) & 0xFF
       }
       return buf
+    },
+    isCreator () {
+      return parseInt(this.user.id) === this.org.creator.id
+    },
+    isApprover () {
+      return parseInt(this.user.id) === this.org.step1_approver.id
+    },
+    isAdmin () {
+      return parseInt(this.user.is_admin)
+    },
+    isScoreValidaInput (value1) {
+      let value = parseInt(value1)
+      let isValid = this.isSubmitted && (value < 1 || value > 5)
+      return { 'is-invalid': isValid }
+    },
+    isValidaInput (value) {
+      let isValid = this.isSubmitted && (value === undefined || value === '' || value === null)
+      return { 'is-invalid': isValid }
+    },
+    isIndicator (indicators) {
+      let isValid = this.isSubmitted && indicators.length === 0
+      return { 'invalid': isValid }
+    },
+    closeRiskAssess () {
+      this.isSearch = false
     }
   },
   computed: {
@@ -272,6 +346,9 @@ export default {
       'msg',
       'approval',
       'approve'
+    ]),
+    ...mapFields('period', [
+      'onPeriod'
     ]),
     filterRiskId () {
       return this.assessment.risk_assessment.map(obj => {
@@ -294,7 +371,7 @@ table {
     input[type="number"] {
       text-align: center;
       height: 30px;
-      width: 50%;
+      width: 70%;
       margin: 0 auto;
     }
   }
@@ -335,5 +412,8 @@ table {
 .extreme {
   background-color: red !important;
   color: white;
+}
+.invalid {
+  border: 1px solid red;
 }
 </style>

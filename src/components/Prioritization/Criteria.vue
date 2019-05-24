@@ -7,7 +7,6 @@
       <thead class="table-head">
         <th>รหัส</th>
         <th>ชื่อตัวขี้วัด</th>
-        <!-- <th>QPS Type</th> -->
         <th>Indicator Type</th>
         <th style="width:100px;" v-for="item in criteria" :key="item.id">{{ item.name }} <span class="more-information" @click="showModal(item)">?</span></th>
         <th>Priority score</th>
@@ -16,7 +15,6 @@
         <tr>
           <td></td>
           <td></td>
-          <!-- <td></td> -->
           <td></td>
           <td colspan="9" style="background-color: antiquewhite;">น้ำหนัก</td>
           <td></td>
@@ -24,7 +22,6 @@
         <tr>
           <td></td>
           <td></td>
-          <!-- <td></td> -->
           <td></td>
           <td style="background-color: antiquewhite;" v-for="item in criteria" :key="item.id">{{ item.weight }}</td>
           <td></td>
@@ -39,10 +36,9 @@
           <tr>
           <td></td>
           <td></td>
-          <!-- <td></td> -->
           <td></td>
           <td style="background-color: aliceblue; text-align: left;" v-for="item in criteria" :key="item.id">
-            <div v-for="scale in item.criteriaScales" :key="scale.id" v-tooltip:left="scale.value + ' ' + scale.description">{{ scale.value }} {{ scale.description | wordWrap }}</div>
+            <div v-for="scale in item.criteriaScales" :key="scale.id">{{ scale.value }} {{ scale.description | wordWrap }}</div>
           </td>
           <td></td>
         </tr>
@@ -55,25 +51,25 @@
               <option v-for="scale in criteria[i].criteriaScales" :value="scale.value" :key="scale.id">{{ scale.value }}</option>
             </select>
           </td>
-          <td v-bind:class="topScore(index)">{{ priorityScore(index) }}</td>
+          <td v-bind:class="topScoreClass(index)">{{ priorityScore(index) }}</td>
         </tr>
         <tr v-if="!prioritization.length">
           <td colspan="13">No Data</td>
         </tr>
       </tbody>
     </table>
+    <div v-if="returnMsg" class="text-center" :class="returnMsgClass">
+      {{ returnMsg }}
+    </div>
     <div
       v-if="showButton">
       <div class="col-md-12 form-group text-right">
-        <button class="btn btn-info" @click="save(true)" v-if="!isSave">Save Draft</button>
+        <!-- <button class="btn btn-warning" @click="save(true)" v-if="!isSave">Save Draft</button> -->
       </div>
       <div class="col-md-12 form-group text-center">
         <button class="btn btn-primary" @click="save(false)" v-if="!isSave">Submit</button>
-        <button class="btn btn-danger">Close</button>
+        <!-- <button class="btn btn-danger">Close</button> -->
       </div>
-    </div>
-    <div v-if="msg" class="text-center text-success">
-      {{ msg }}
     </div>
      <app-criteria
       v-show="isModalVisible"
@@ -102,7 +98,9 @@ export default {
       user: JSON.parse(localStorage.getItem('user')),
       isDraft: true,
       isModalVisible: false,
-      selectedCriteria: []
+      selectedCriteria: [],
+      returnMsg: '',
+      returnMsgClass: ''
     }
   },
   created () {
@@ -131,8 +129,8 @@ export default {
         return result
       }
     },
-    topScore (index) {
-      return index === 0 && this.prioritization[index].priority_score > 0 ? 'top-score-text' : ''
+    topScoreClass (index) {
+      return this.prioritization[index].priority_score === this.topScore ? 'top-score-text' : ''
     },
     save (isDraft) {
       this.$store.dispatch('prioritization/savePrioritization', {
@@ -140,8 +138,17 @@ export default {
         isDraft: isDraft
       })
         .then(() => {
+          this.returnMsg = 'Save success'
+          if (isDraft) {
+            this.returnMsg = 'Save draft success'
+          }
+          this.returnMsgClass = 'text-success'
           this.isDraft = isDraft
           this.isSave = false
+        })
+        .catch(() => {
+          this.returnMsg = 'Save failed'
+          this.returnMsgClass = 'text-danger'
         })
     },
     exportExcel () {
@@ -169,7 +176,8 @@ export default {
       'count',
       'prioritization',
       'perf',
-      'msg'
+      'msg',
+      'topScore'
     ]),
     ...mapFields('period', [
       'onPeriod'

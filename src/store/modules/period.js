@@ -25,6 +25,9 @@ const mutations = {
   'SET_PERIOD' (state, period) {
     state.period = period
   },
+  'RESET_PERIOD' (state) {
+    state.period = []
+  },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
   }
@@ -35,11 +38,16 @@ const actions = {
     commit('RESET_STATE')
   },
   savePeriod ({ commit }, periods) {
-    axios.post('/period', periods)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.post('/period', periods)
+        .then(res => {
+          // commit('RESET_STATE')
+          resolve()
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
   },
   searchPeriod ({ commit }, payload) {
     return new Promise((resolve, reject) => {
@@ -69,11 +77,16 @@ const actions = {
       .catch(err => console.log(err))
   },
   updatePeriod ({ commit }, periods) {
-    axios.put('/period', periods)
-      .then(res => {
-        commit('RESET_STATE')
-      })
-      .catch(err => console.log(err))
+    return new Promise((resolve, reject) => {
+      axios.put('/period', periods)
+        .then(res => {
+          resolve()
+          // commit('RESET_STATE')
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
   },
   getPeriodCompare ({ commit }, payload) {
     return new Promise((resolve, reject) => {

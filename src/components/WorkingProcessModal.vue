@@ -7,7 +7,7 @@
         aria-describedby="modal1Description">
         <header class="modal1-header" id="modal1Title">
           <slot name="header">
-            {{ criteria.name }}
+            Organization Unit
             <button
               type="button"
               class="btn-close"
@@ -27,13 +27,15 @@
               <div class="row">
                 <table class="table table-bg">
                   <thead class="table-head">
-                    <th>Score</th>
-                    <th>Description</th>
+                    <th>Code</th>
+                    <th>Type</th>
+                    <th>Name</th>
                   </thead>
                   <tbody class="text-left">
-                    <tr v-for="scale in criteria.criteriaScales" :key="scale.id">
-                      <td>{{ scale.value }}</td>
-                      <td>{{ scale.description }}</td>
+                    <tr v-for="ou in organizationUnit" :key="ou.id">
+                      <td>{{ ou.code }}</td>
+                      <td>{{ ou.type }}</td>
+                      <td>{{ ou.name }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -53,7 +55,10 @@
 <script>
 
 export default {
-  props: ['criteria'],
+  props: {
+    organizationUnit: Array,
+    default: null
+  },
   data () {
     return {
     }

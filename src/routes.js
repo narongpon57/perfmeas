@@ -38,6 +38,8 @@ import OrganizationForm from './components/Admin/Organization/OrganizationForm.v
 
 import Approve from './components/Admin/Approve/Approve.vue'
 
+import Summary from '@/components/Summary/Summary.vue'
+
 export const routes = [
   {
     path: '/',
@@ -51,7 +53,7 @@ export const routes = [
         component: Worklist
       },
       {
-        path: 'risk_assessment',
+        path: 'risk_assessment/:year?/:org_id?',
         component: RiskAssessment
       },
       { path: 'prioritization', component: Prioritization },
@@ -76,7 +78,8 @@ export const routes = [
       { path: 'period_management', component: Period },
       { path: 'period_management_form/:id?', component: PeriodForm },
       { path: 'organization_management', component: Organization },
-      { path: 'organization_management_form/:id?', component: OrganizationForm }
+      { path: 'organization_management_form/:id?', component: OrganizationForm },
+      { path: 'summary', component: Summary }
     ]
   },
   { path: '/login',

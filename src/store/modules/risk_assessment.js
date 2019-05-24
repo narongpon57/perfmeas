@@ -104,8 +104,8 @@ const mutations = {
       }
     }
   },
-  'SET_ASSESSMENT_STATUS' (state, assessment) {
-    state.assessment.status = assessment.status
+  'SET_ASSESSMENT_STATUS' (state, status) {
+    state.assessment.status = status
   },
   'RESET_STATE' (state) {
     Object.assign(state, initialState())
@@ -170,6 +170,7 @@ const actions = {
           msg: 'Update Complete!',
           success: true
         }
+        commit('SET_ASSESSMENT_STATUS', payload.status)
         commit('SET_RETURN_MSG', result)
       })
       .catch(err => {
@@ -218,12 +219,13 @@ const actions = {
       axios.post('/approval', payload)
         .then(res => res.data.result)
         .then(approval => {
+          console.log(approval)
           commit('ADD_APPROVAL', approval)
           return axios.get('/assessment', { params: { id: payload.assessment_id } })
         })
         .then(res => res.data.result)
         .then(assessment => {
-          commit('SET_ASSESSMENT_STATUS', assessment)
+          commit('SET_ASSESSMENT_STATUS', assessment.status)
         })
         .catch(err => console.log(err))
     })

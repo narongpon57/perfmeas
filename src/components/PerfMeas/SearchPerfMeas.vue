@@ -38,7 +38,7 @@
               <button class="btn btn-info" @click="search">Search</button>
             </div>
             <div class="col-md-6">
-              <button class="btn btn-danger">Clear</button>
+              <button class="btn btn-danger" @click="clear()">Clear</button>
             </div>
           </div>
         </div>
@@ -103,6 +103,11 @@ export default {
           localStorage.setItem('org', JSON.stringify(this.orgSelected))
           this.isSearch = true
         })
+    },
+    clear() {
+      this.isSearch = false
+      localStorage.removeItem('org')
+      this.$store.commit('organization/RESET_STATE')
     }
   },
   computed: {

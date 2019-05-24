@@ -30,11 +30,13 @@
               <label for="" class="font-normal">Data of Year</label>
               <v-select v-model="yearSelected" :options="year"></v-select>
             </div>
-            <div class="form-group text-center">
+            <div class="form-group text-center" v-if="orgSelected && yearSelected">
               <button
                 class="btn btn-info"
-                v-if="orgSelected && yearSelected"
                 @click="search">Search</button>
+              <button
+                class="btn btn-danger ml-2"
+                @click="clear">Clear</button>
             </div>
           </div>
           <div class="col-md-8">
@@ -154,6 +156,11 @@ export default {
     },
     selectOrgType (type) {
       this.searchOrg(type)
+    },
+    clear() {
+      this.isSearch = false
+      localStorage.removeItem('org')
+      this.$store.commit('organization/RESET_STATE')
     }
   },
   computed: {
